@@ -4,7 +4,7 @@ LIBRARIES = main.o tableau.o SaveHistory.o
 
 all: $(PROGNAME)
 
-Blacksmithing.out: $(LIBRARIES)
+$(PROGNAME): $(LIBRARIES)
 	$(CC) -o $(PROGNAME) $(LIBRARIES)
 
 main.o: main.cxx 
