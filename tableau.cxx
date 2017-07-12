@@ -79,6 +79,10 @@ destination tableau::Move(int x, int y)
       MoveDiagonal(x, y, destinations, N_possible, 4);
       MoveStraight(x, y, destinations, N_possible, 4);
     }
+  else if(pieces[x][y]=="W") //Rum (WILDCARD!)
+    {
+      MoveWildcard(x, y, destinations, N_possible);
+    }
   if(N_possible > 0) //If it's possible
     {
       dest_number = rand() % N_possible;
@@ -90,8 +94,6 @@ destination tableau::Move(int x, int y)
     }
   pieces[x][y]="E";//Remove the piece, and make it empty
   return destinations[dest_number];
-
-
 }
 
 void tableau::MoveDiagonal(int x, int y, destination destinations[maxpos], int &N_possible, int steps)
@@ -178,7 +180,7 @@ void tableau::MoveStraight(int x, int y, destination destinations[maxpos], int &
 void tableau::MoveKnight(int x, int y, destination destinations[maxpos], int &N_possible)
 {
   //Junk destination variable to test before adding
-  destination test_dest[maxpos];
+  destination test_dest[movepos_K];
   //4 possible moves
   int i=0;
   test_dest[i].x=x-1; test_dest[i].y=y-2; i++;
@@ -191,14 +193,14 @@ void tableau::MoveKnight(int x, int y, destination destinations[maxpos], int &N_
   test_dest[i].x=x+2; test_dest[i].y=y+1; i++;
 
   //If off-limits, return to initial pos
-  for(i=0;i<maxpos;i++)
+  for(i=0;i<movepos_K;i++)
     {
       if(test_dest[i].x < 0 || test_dest[i].x > 5 || test_dest[i].y < 0 || test_dest[i].y > 5)
 	{
 	  test_dest[i].x=x; test_dest[i].y=y;
 	}
     }
-  for(i=0;i<movepos;i++)
+  for(i=0;i<movepos_K;i++)
     {
       if((test_dest[i].x==x && test_dest[i].y==y) || pieces[test_dest[i].x][test_dest[i].y]=="E"){} //If same place or empty place do nothing
       else
@@ -208,4 +210,47 @@ void tableau::MoveKnight(int x, int y, destination destinations[maxpos], int &N_
 	}
     }
   return;
+}
+
+void tableau::MoveWildcard(int x, int y, destination destinations[maxpos], int &N_possible)
+{
+  //Junk destination variable to test before adding
+  destination test_dest[maxpos];
+  //Wildcard, all are possible
+  for(int i=0;i<row;i++)
+    {
+      for(int j=0;j<col;j++)
+	{
+	  test_dest[col*i+j].x=i; test_dest[col*i+j].y=j;
+	}
+    }
+  for(int i=0;i<maxpos;i++)
+    {
+      if((test_dest[i].x==x && test_dest[i].y==y) || pieces[test_dest[i].x][test_dest[i].y]=="E"){} //If same place or empty place do nothing
+      else
+	{
+	  destinations[N_possible] = test_dest[i];
+	  N_possible++;
+	}
+    }
+  return;
+}
+
+destination tableau::Randomize(int x, int y)
+{
+  int N_possible = 0; //Track number of possibilities
+  destination destinations[maxpos]; //Save all possible destinations
+  int dest_number; //Random destination number
+  int finalpos[2];
+  MoveWildcard(x, y, destinations, N_possible);
+  if(N_possible > 0) //If it's possible
+    {
+      dest_number = rand() % N_possible;
+    }
+  else
+    {
+      dest_number = 0;
+      destinations[dest_number].x=-1; destinations[dest_number].y=-1;
+    }
+  return destinations[dest_number];
 }

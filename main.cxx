@@ -19,16 +19,21 @@ int main()
   int step = 0;
   int best_step = 0;
   //Ask for initial position
-  cout << "Initial row? (Number 0-5): ";
+  cout << "Initial row? (Number 0-5) (6 for random): ";
   cin >> poshistory[step].x;
-  cout << "Initial column? (Number 0-5): ";
+  cout << "Initial column? (Number 0-5) (6 for random): ";
   cin >> poshistory[step].y;
   
   tableau board; //Initialize board (tableau)
   tableau initial_board;
   string boarddata = "board.dat"; //File where initial board is saved
   initial_board.Load(boarddata); //Load the board
-  
+
+  //Randomize position if requested
+  if(poshistory[step].x==6 || poshistory[step].y==6)
+    {
+      poshistory[step] = initial_board.Randomize(poshistory[step].x, poshistory[step].y);
+    }
   for(int i=0;i<maxsteps;i++)//Iterate many times
     {
       board = initial_board;
