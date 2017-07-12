@@ -1,3 +1,9 @@
 *.o
 *~
 *.out
+
+#Windows compilation
+*.dev
+*.exe
+*.layout
+*.win

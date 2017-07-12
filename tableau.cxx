@@ -55,7 +55,7 @@ destination tableau::Move(int x, int y)
     {
       MoveStraight(x, y, destinations, N_possible);
     }
-  else if(pieces[x][y]=="Knight") //Knight
+  else if(pieces[x][y]=="K") //Knight
     {
       MoveKnight(x, y, destinations, N_possible);
     }

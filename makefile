@@ -7,7 +7,7 @@ all: $(PROGNAME)
 $(PROGNAME): $(LIBRARIES)
 	$(CC) -o $(PROGNAME) $(LIBRARIES)
 
-main.o: main.cxx 
+main.o: main.cxx
 	$(CC) -c $<
 
 tableau.o: tableau.cxx tableau.h
