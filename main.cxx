@@ -14,8 +14,9 @@ int main()
   //Initialize random seed
   srand(time(NULL));
 
-  destination poshistory[36];
-  destination best_poshistory[36];  
+  destination poshistory[37];
+  destination best_poshistory[37];
+  
   int step = 0;
   int best_step = 0;
   //Ask for initial position
@@ -29,16 +30,15 @@ int main()
   string boarddata = "board.dat"; //File where initial board is saved
   initial_board.Load(boarddata); //Load the board
 
-  //Randomize position if requested
-  if(poshistory[step].x==6 || poshistory[step].y==6)
-    {
-      poshistory[step] = initial_board.Randomize(poshistory[step].x, poshistory[step].y);
-      cout << "Start at (" << poshistory[step].x << "," << poshistory[step].y << ")" << endl;
-    }
   for(int i=0;i<maxsteps;i++)//Iterate many times
     {
       board = initial_board;
       step = 0;
+      //Randomize position if requested
+      if(poshistory[step].x==6 || poshistory[step].y==6)
+	{
+	  poshistory[step] = initial_board.Randomize(poshistory[step].x, poshistory[step].y);
+	}
       while(poshistory[step].x > -1) //When no moves available, it is -1
 	{
 	  step++;
@@ -49,7 +49,7 @@ int main()
 	  best_step = step;
 	  for(int j=0;j<best_step;j++)
 	    {
-	      best_poshistory[j] = poshistory[j]; 
+	      best_poshistory[j] = poshistory[j];
 	    }
 	}
     }
