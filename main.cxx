@@ -33,6 +33,7 @@ int main()
   if(poshistory[step].x==6 || poshistory[step].y==6)
     {
       poshistory[step] = initial_board.Randomize(poshistory[step].x, poshistory[step].y);
+      cout << "Start at (" << poshistory[step].x << "," << poshistory[step].y << ")" << endl;
     }
   for(int i=0;i<maxsteps;i++)//Iterate many times
     {
