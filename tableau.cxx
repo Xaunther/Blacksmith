@@ -254,3 +254,20 @@ destination tableau::Randomize(int x, int y)
     }
   return destinations[dest_number];
 }
+
+int tableau::CountPieces()
+{
+  //Loop around and count non-empty slots
+  int count = 0;
+  for(int i=0;i<row;i++)
+    {
+      for(int j=0;j<col;j++)
+	{
+	  if(pieces[i][j]!="E")
+	    {
+	      count++;
+	    }
+	}
+    }
+  return count;
+}

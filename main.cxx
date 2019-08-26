@@ -29,6 +29,7 @@ int main()
   tableau initial_board;
   string boarddata = "board.dat"; //File where initial board is saved
   initial_board.Load(boarddata); //Load the board
+  int N_pieces = initial_board.CountPieces(); //Count how many pieces there are (max number of steps one can achieve)
 
   for(int i=0;i<maxsteps;i++)//Iterate many times
     {
@@ -50,6 +51,11 @@ int main()
 	  for(int j=0;j<best_step;j++)
 	    {
 	      best_poshistory[j] = poshistory[j];
+	    }
+	  //End loop if maximum possible length is achieved (saves time)
+	  if(best_step == N_pieces)
+	    {
+	      break;
 	    }
 	}
     }

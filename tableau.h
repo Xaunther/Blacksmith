@@ -18,6 +18,7 @@ class tableau
   void MoveStraight(int, int, destination[maxpos], int &, int steps = -1);
   void MoveKnight(int, int, destination[maxpos], int &);
   void MoveWildcard(int, int, destination[maxpos], int &);
+  int CountPieces();
   
   //Variables
   string pieces[row][col];//Codes for piece type: (E)mpty, (Q)ueen, (B)ishop, (R)ook, (K)night, 1, 2, 3, 4, (W)wildcard
