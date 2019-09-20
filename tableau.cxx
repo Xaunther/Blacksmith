@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string>
 #include <fstream>
+#include <algorithm>
 using namespace std;
 
 //Initializer
@@ -41,7 +42,6 @@ destination tableau::Move(int x, int y)
   int N_possible = 0; //Track number of possibilities
   destination destinations[maxpos]; //Save all possible destinations
   int dest_number; //Random destination number
-  int finalpos[2];
   if(pieces[x][y]=="Q") //Queen
     {
       MoveDiagonal(x, y, destinations, N_possible);
@@ -241,7 +241,6 @@ destination tableau::Randomize(int x, int y)
   int N_possible = 0; //Track number of possibilities
   destination destinations[maxpos]; //Save all possible destinations
   int dest_number; //Random destination number
-  int finalpos[2];
   MoveWildcard(x, y, destinations, N_possible);
   if(N_possible > 0) //If it's possible
     {
