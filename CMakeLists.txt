@@ -5,4 +5,4 @@ include_directories(${CMAKE_SOURCE_DIR})
 
 file(GLOB SOURCES "*.cxx")
 
-add_executable(Blacksmith main.cpp)
+add_executable(Blacksmith ${SOURCES})
