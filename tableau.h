@@ -1,27 +1,39 @@
-//Header file for tableau class
+// Header file for tableau class
 #ifndef tableau_h
 #define tableau_h
 
 #include "Constants.h"
-#include "destination.h"
+#include <utility>
+#include <array>
 #include <string>
-using namespace std;
 
 class tableau
 {
- public:
-  tableau();
-  void Load(string);
-  destination Move(int, int);
-  destination Randomize(int , int);
-  void MoveDiagonal(int, int, destination[maxpos], int &, int steps = -1);
-  void MoveStraight(int, int, destination[maxpos], int &, int steps = -1);
-  void MoveKnight(int, int, destination[maxpos], int &);
-  void MoveWildcard(int, int, destination[maxpos], int &);
-  int CountPieces();
-  
-  //Variables
-  string pieces[row][col];//Codes for piece type: (E)mpty, (Q)ueen, (B)ishop, (R)ook, (K)night, 1, 2, 3, 4, (W)wildcard
+public:
+	using destination = std::pair<int, int>;
+	using piece_matrix = std::array<std::array<std::string, col>, row>;
+
+	tableau();
+
+	void Load( std::string );
+
+	destination Move( const destination& aDestination );
+
+	destination Randomize( const destination& aDestination );
+
+	void MoveDiagonal( const destination& aDestination, destination[ maxpos ], int&, int steps = -1 );
+	void MoveStraight( const destination& aDestination, destination[ maxpos ], int&, int steps = -1 );
+	void MoveKnight( const destination& aDestination, destination[ maxpos ], int& );
+	void MoveWildcard( const destination& aDestination, destination[ maxpos ], int& );
+
+	const piece_matrix& GetPieces() const;
+
+	void SetPiece( const destination& aDestination, const std::string& aPiece );
+
+	int CountPieces() const;
+
+	// Variables
+	piece_matrix mPieces; // Codes for piece type: (E)mpty, (Q)ueen, (B)ishop, (R)ook, (K)night, 1, 2, 3, 4, (W)wildcard
 };
 
 #endif

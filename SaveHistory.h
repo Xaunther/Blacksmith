@@ -1,10 +1,12 @@
-//Function to save the best combination
+// Function to save the best combination
 #ifndef SaveHistory_h
 #define SaveHistory_h
 
 #include "tableau.h"
-#include "destination.h"
+#include <utility>
+#include <array>
 
-void SaveHistory(destination[36], int, tableau*);
+using history = std::array<tableau::destination, maxpos + 1>;
+void SaveHistory( const history& aHistory, const int aSteps, tableau& aTableau );
 
 #endif

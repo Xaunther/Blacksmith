@@ -1,4 +1,4 @@
-//Declare constants here
+// Declare constants here
 #ifndef Constants_h
 #define Constants_h
 
