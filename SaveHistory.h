@@ -4,9 +4,9 @@
 
 #include "tableau.h"
 #include <utility>
-#include <array>
+#include <list>
 
-using history = std::array<tableau::destination, maxpos + 1>;
-void SaveHistory( const history& aHistory, const int aSteps, const tableau& aTableau, const tableau& aInitialTableau );
+using history = std::list<tableau::destination>;
+void SaveHistory( const history& aHistory, const tableau& aTableau, const tableau& aInitialTableau );
 
 #endif

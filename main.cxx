@@ -13,38 +13,30 @@ int main()
 	// Initialize random seed
 	srand( static_cast< unsigned int >( time( NULL ) ) );
 
-	history poshistory;
 	history best_poshistory;
-	poshistory[ 0 ] = InputOrigin();
+	history::value_type epoch = InputOrigin();
 
-	tableau board; // Initialize board (tableau)
-	tableau initial_board;
-	initial_board.Load( "board.dat" );				// Load the board
+	tableau best_board; // Initialize board (tableau)
+	const tableau initial_board( "board.dat" );
 	int N_pieces = initial_board.CountPieces(); // Count how many pieces there are (max number of steps one can achieve)
 
-	int best_step = 0;
-	for ( int i = 0; i < maxsteps; i++ ) // Iterate many times
+	for ( int i = 0; i < maxsteps && best_poshistory.size() < N_pieces; i++ ) // Iterate many times
 	{
-		tableau board = initial_board;
-		int step = 0;
+		tableau board{ initial_board };
+		history poshistory = { epoch };
 		// Randomize position if requested
-		if ( poshistory[ step ].first == row || poshistory[ step ].second == col )
-			poshistory[ step ] = initial_board.Randomize( poshistory[ step ] );
-		while ( poshistory[ step ].first > -1 ) // When no moves available, it is -1
+		if ( poshistory.back().first == row || poshistory.back().second == col )
+			poshistory.back() = initial_board.Randomize( poshistory.back() );
+		while ( poshistory.back().first > -1 ) // When no moves available, it is -1
+			poshistory.emplace_back( board.Move( poshistory.back() ) );
+		poshistory.pop_back();
+		if ( poshistory.size() > best_poshistory.size() ) // New record!
 		{
-			step++;
-			poshistory[ step ] = board.Move( poshistory[ step - 1 ] );
-		}
-		if ( step > best_step ) // New record!
-		{
-			best_step = step;
-			best_poshistory = poshistory;
-			// End loop if maximum possible length is achieved (saves time)
-			if ( best_step == N_pieces )
-				break;
+			best_board = std::move( board );
+			best_poshistory = std::move( poshistory );
 		}
 	}
-	SaveHistory( best_poshistory, best_step, board, initial_board );
+	SaveHistory( best_poshistory, best_board, initial_board );
 	return 0;
 }
 
