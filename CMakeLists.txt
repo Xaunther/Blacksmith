@@ -6,3 +6,5 @@ include_directories(${CMAKE_SOURCE_DIR})
 file(GLOB SOURCES "*.cxx")
 
 add_executable(Blacksmith ${SOURCES})
+
+set_property(GLOBAL PROPERTY CXX_STANDARD 20)

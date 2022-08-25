@@ -1,33 +1,32 @@
 // Main function
 
 #include "SaveHistory.h"
-#include "destination.h"
 #include "tableau.h"
 #include <iostream>
 #include <stdlib.h>
 #include <string>
+#include <utility>
 #include <time.h>
-using namespace std;
 
 int main()
 {
 	// Initialize random seed
 	srand( time( NULL ) );
 
-	destination poshistory[ 37 ];
-	destination best_poshistory[ 37 ];
+	history poshistory;
+	history best_poshistory;
 
 	int step = 0;
 	int best_step = 0;
 	// Ask for initial position
-	cout << "Initial row? (Number 0-5) (6 for random): ";
-	cin >> poshistory[ step ].x;
-	cout << "Initial column? (Number 0-5) (6 for random): ";
-	cin >> poshistory[ step ].y;
+	std::cout << "Initial row? (Number 0-5) (6 for random): ";
+	std::cin >> poshistory[ step ].first;
+	std::cout << "Initial column? (Number 0-5) (6 for random): ";
+	std::cin >> poshistory[ step ].second;
 
 	tableau board; // Initialize board (tableau)
 	tableau initial_board;
-	string boarddata = "board.dat";				// File where initial board is saved
+	std::string boarddata = "board.dat";				// File where initial board is saved
 	initial_board.Load( boarddata );				// Load the board
 	int N_pieces = initial_board.CountPieces(); // Count how many pieces there are (max number of steps one can achieve)
 
@@ -36,14 +35,14 @@ int main()
 		board = initial_board;
 		step = 0;
 		// Randomize position if requested
-		if ( poshistory[ step ].x == 6 || poshistory[ step ].y == 6 )
+		if ( poshistory[ step ].first == 6 || poshistory[ step ].second == 6 )
 		{
-			poshistory[ step ] = initial_board.Randomize( poshistory[ step ].x, poshistory[ step ].y );
+			poshistory[ step ] = initial_board.Randomize( poshistory[ step ] );
 		}
-		while ( poshistory[ step ].x > -1 ) // When no moves available, it is -1
+		while ( poshistory[ step ].first > -1 ) // When no moves available, it is -1
 		{
 			step++;
-			poshistory[ step ] = board.Move( poshistory[ step - 1 ].x, poshistory[ step - 1 ].y );
+			poshistory[ step ] = board.Move( poshistory[ step - 1 ] );
 		}
 		if ( step > best_step ) // New record!
 		{
@@ -59,6 +58,6 @@ int main()
 			}
 		}
 	}
-	SaveHistory( best_poshistory, best_step, &initial_board );
+	SaveHistory( best_poshistory, best_step, initial_board );
 	return 0;
 }

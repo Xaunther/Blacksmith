@@ -1,7 +1,6 @@
 // Implementation of tableau
 
 #include "tableau.h"
-#include "destination.h"
 #include <algorithm>
 #include <fstream>
 #include <stdlib.h>
@@ -14,7 +13,7 @@ tableau::tableau()
 	{
 		for ( int j = 0; j < col; j++ )
 		{
-			pieces[ i ][ j ] = "E";
+			mPieces[ i ][ j ] = "E";
 		}
 	}
 }
@@ -29,58 +28,58 @@ void tableau::Load( std::string filename )
 	{
 		for ( int j = 0; j < col; j++ )
 		{
-			infile >> pieces[ i ][ j ];
+			infile >> mPieces[ i ][ j ];
 		}
 	}
 	infile.close();
 }
 
 // Move from current place to another suitable one, randomly. Return next point
-destination tableau::Move( int x, int y )
+tableau::destination tableau::Move( const destination& aDestination )
 {
 	int N_possible = 0;				  // Track number of possibilities
 	destination destinations[ maxpos ]; // Save all possible destinations
 	int dest_number;				  // Random destination number
-	if ( pieces[ x ][ y ] == "Q" )		  // Queen
+	if ( mPieces[ aDestination.first ][ aDestination.second ] == "Q" )		  // Queen
 	{
-		MoveDiagonal( x, y, destinations, N_possible );
-		MoveStraight( x, y, destinations, N_possible );
+		MoveDiagonal( aDestination, destinations, N_possible );
+		MoveStraight( aDestination, destinations, N_possible );
 	}
-	else if ( pieces[ x ][ y ] == "B" ) // Bishop
+	else if ( mPieces[ aDestination.first ][ aDestination.second ] == "B" ) // Bishop
 	{
-		MoveDiagonal( x, y, destinations, N_possible );
+		MoveDiagonal( aDestination, destinations, N_possible );
 	}
-	else if ( pieces[ x ][ y ] == "R" ) // Rook
+	else if ( mPieces[ aDestination.first ][ aDestination.second ] == "R" ) // Rook
 	{
-		MoveStraight( x, y, destinations, N_possible );
+		MoveStraight( aDestination, destinations, N_possible );
 	}
-	else if ( pieces[ x ][ y ] == "K" ) // Knight
+	else if ( mPieces[ aDestination.first ][ aDestination.second ] == "K" ) // Knight
 	{
-		MoveKnight( x, y, destinations, N_possible );
+		MoveKnight( aDestination, destinations, N_possible );
 	}
-	else if ( pieces[ x ][ y ] == "1" ) // 1
+	else if ( mPieces[ aDestination.first ][ aDestination.second ] == "1" ) // 1
 	{
-		MoveDiagonal( x, y, destinations, N_possible, 1 );
-		MoveStraight( x, y, destinations, N_possible, 1 );
+		MoveDiagonal( aDestination, destinations, N_possible, 1 );
+		MoveStraight( aDestination, destinations, N_possible, 1 );
 	}
-	else if ( pieces[ x ][ y ] == "2" ) // 2
+	else if ( mPieces[ aDestination.first ][ aDestination.second ] == "2" ) // 2
 	{
-		MoveDiagonal( x, y, destinations, N_possible, 2 );
-		MoveStraight( x, y, destinations, N_possible, 2 );
+		MoveDiagonal( aDestination, destinations, N_possible, 2 );
+		MoveStraight( aDestination, destinations, N_possible, 2 );
 	}
-	else if ( pieces[ x ][ y ] == "3" ) // 3
+	else if ( mPieces[ aDestination.first ][ aDestination.second ] == "3" ) // 3
 	{
-		MoveDiagonal( x, y, destinations, N_possible, 3 );
-		MoveStraight( x, y, destinations, N_possible, 3 );
+		MoveDiagonal( aDestination, destinations, N_possible, 3 );
+		MoveStraight( aDestination, destinations, N_possible, 3 );
 	}
-	else if ( pieces[ x ][ y ] == "4" ) // 4
+	else if ( mPieces[ aDestination.first ][ aDestination.second ] == "4" ) // 4
 	{
-		MoveDiagonal( x, y, destinations, N_possible, 4 );
-		MoveStraight( x, y, destinations, N_possible, 4 );
+		MoveDiagonal( aDestination, destinations, N_possible, 4 );
+		MoveStraight( aDestination, destinations, N_possible, 4 );
 	}
-	else if ( pieces[ x ][ y ] == "W" ) // Rum (WILDCARD!)
+	else if ( mPieces[ aDestination.first ][ aDestination.second ] == "W" ) // Rum (WILDCARD!)
 	{
-		MoveWildcard( x, y, destinations, N_possible );
+		MoveWildcard( aDestination, destinations, N_possible );
 	}
 	if ( N_possible > 0 ) // If it's possible
 	{
@@ -89,14 +88,14 @@ destination tableau::Move( int x, int y )
 	else
 	{
 		dest_number = 0;
-		destinations[ dest_number ].x = -1;
-		destinations[ dest_number ].y = -1;
+		destinations[ dest_number ].first = -1;
+		destinations[ dest_number ].second = -1;
 	}
-	pieces[ x ][ y ] = "E"; // Remove the piece, and make it empty
+	mPieces[ aDestination.first ][ aDestination.second ] = "E"; // Remove the piece, and make it empty
 	return destinations[ dest_number ];
 }
 
-void tableau::MoveDiagonal( int x, int y, destination destinations[ maxpos ], int& N_possible, int steps )
+void tableau::MoveDiagonal( const destination& aDestination, destination destinations[ maxpos ], int& N_possible, int steps )
 {
 	// Junk destination variable to test before adding
 	destination test_dest[ movepos ];
@@ -104,46 +103,46 @@ void tableau::MoveDiagonal( int x, int y, destination destinations[ maxpos ], in
 	int i = 0;
 	if ( steps < 0 )
 	{
-		test_dest[ i ].x = x - std::min( x - 0, y - 0 );
-		test_dest[ i ].y = y - std::min( x - 0, y - 0 );
+		test_dest[ i ].first = aDestination.first - std::min( aDestination.first - 0, aDestination.second - 0 );
+		test_dest[ i ].second = aDestination.second - std::min( aDestination.first - 0, aDestination.second - 0 );
 		i++;
-		test_dest[ i ].x = x + std::min( 5 - x, y - 0 );
-		test_dest[ i ].y = y - std::min( 5 - x, y - 0 );
+		test_dest[ i ].first = aDestination.first + std::min( 5 - aDestination.first, aDestination.second - 0 );
+		test_dest[ i ].second = aDestination.second - std::min( 5 - aDestination.first, aDestination.second - 0 );
 		i++;
-		test_dest[ i ].x = x + std::min( 5 - x, 5 - y );
-		test_dest[ i ].y = y + std::min( 5 - x, 5 - y );
+		test_dest[ i ].first = aDestination.first + std::min( 5 - aDestination.first, 5 - aDestination.second );
+		test_dest[ i ].second = aDestination.second + std::min( 5 - aDestination.first, 5 - aDestination.second );
 		i++;
-		test_dest[ i ].x = x - std::min( x - 0, 5 - y );
-		test_dest[ i ].y = y + std::min( x - 0, 5 - y );
+		test_dest[ i ].first = aDestination.first - std::min( aDestination.first - 0, 5 - aDestination.second );
+		test_dest[ i ].second = aDestination.second + std::min( aDestination.first - 0, 5 - aDestination.second );
 		i++;
 	}
 	else
 	{
-		test_dest[ i ].x = x - steps;
-		test_dest[ i ].y = y - steps;
+		test_dest[ i ].first = aDestination.first - steps;
+		test_dest[ i ].second = aDestination.second - steps;
 		i++;
-		test_dest[ i ].x = x + steps;
-		test_dest[ i ].y = y - steps;
+		test_dest[ i ].first = aDestination.first + steps;
+		test_dest[ i ].second = aDestination.second - steps;
 		i++;
-		test_dest[ i ].x = x + steps;
-		test_dest[ i ].y = y + steps;
+		test_dest[ i ].first = aDestination.first + steps;
+		test_dest[ i ].second = aDestination.second + steps;
 		i++;
-		test_dest[ i ].x = x - steps;
-		test_dest[ i ].y = y + steps;
+		test_dest[ i ].first = aDestination.first - steps;
+		test_dest[ i ].second = aDestination.second + steps;
 		i++;
 		// If off-limits, return to initial pos
 		for ( i = 0; i < movepos; i++ )
 		{
-			if ( test_dest[ i ].x < 0 || test_dest[ i ].x > 5 || test_dest[ i ].y < 0 || test_dest[ i ].y > 5 )
+			if ( test_dest[ i ].first < 0 || test_dest[ i ].first > 5 || test_dest[ i ].second < 0 || test_dest[ i ].second > 5 )
 			{
-				test_dest[ i ].x = x;
-				test_dest[ i ].y = y;
+				test_dest[ i ].first = aDestination.first;
+				test_dest[ i ].second = aDestination.second;
 			}
 		}
 	}
 	for ( i = 0; i < movepos; i++ )
 	{
-		if ( ( test_dest[ i ].x == x && test_dest[ i ].y == y ) || pieces[ test_dest[ i ].x ][ test_dest[ i ].y ] == "E" )
+		if ( ( test_dest[ i ].first == aDestination.first && test_dest[ i ].second == aDestination.second ) || mPieces[ test_dest[ i ].first ][ test_dest[ i ].second ] == "E" )
 		{
 		} // If same place or empty place do nothing
 		else
@@ -155,7 +154,7 @@ void tableau::MoveDiagonal( int x, int y, destination destinations[ maxpos ], in
 	return;
 }
 
-void tableau::MoveStraight( int x, int y, destination destinations[ maxpos ], int& N_possible, int steps )
+void tableau::MoveStraight( const destination& aDestination, destination destinations[ maxpos ], int& N_possible, int steps )
 {
 	// Junk destination variable to test before adding
 	destination test_dest[ movepos ];
@@ -163,46 +162,46 @@ void tableau::MoveStraight( int x, int y, destination destinations[ maxpos ], in
 	int i = 0;
 	if ( steps < 0 )
 	{
-		test_dest[ i ].x = 0;
-		test_dest[ i ].y = y;
+		test_dest[ i ].first = 0;
+		test_dest[ i ].second = aDestination.second;
 		i++;
-		test_dest[ i ].x = 5;
-		test_dest[ i ].y = y;
+		test_dest[ i ].first = 5;
+		test_dest[ i ].second = aDestination.second;
 		i++;
-		test_dest[ i ].x = x;
-		test_dest[ i ].y = 0;
+		test_dest[ i ].first = aDestination.first;
+		test_dest[ i ].second = 0;
 		i++;
-		test_dest[ i ].x = x;
-		test_dest[ i ].y = 5;
+		test_dest[ i ].first = aDestination.first;
+		test_dest[ i ].second = 5;
 		i++;
 	}
 	else
 	{
-		test_dest[ i ].x = x + steps;
-		test_dest[ i ].y = y;
+		test_dest[ i ].first = aDestination.first + steps;
+		test_dest[ i ].second = aDestination.second;
 		i++;
-		test_dest[ i ].x = x - steps;
-		test_dest[ i ].y = y;
+		test_dest[ i ].first = aDestination.first - steps;
+		test_dest[ i ].second = aDestination.second;
 		i++;
-		test_dest[ i ].x = x;
-		test_dest[ i ].y = y + steps;
+		test_dest[ i ].first = aDestination.first;
+		test_dest[ i ].second = aDestination.second + steps;
 		i++;
-		test_dest[ i ].x = x;
-		test_dest[ i ].y = y - steps;
+		test_dest[ i ].first = aDestination.first;
+		test_dest[ i ].second = aDestination.second - steps;
 		i++;
 		// If off-limits, return to initial pos
 		for ( i = 0; i < movepos; i++ )
 		{
-			if ( test_dest[ i ].x < 0 || test_dest[ i ].x > 5 || test_dest[ i ].y < 0 || test_dest[ i ].y > 5 )
+			if ( test_dest[ i ].first < 0 || test_dest[ i ].first > 5 || test_dest[ i ].second < 0 || test_dest[ i ].second > 5 )
 			{
-				test_dest[ i ].x = x;
-				test_dest[ i ].y = y;
+				test_dest[ i ].first = aDestination.first;
+				test_dest[ i ].second = aDestination.second;
 			}
 		}
 	}
 	for ( i = 0; i < movepos; i++ )
 	{
-		if ( ( test_dest[ i ].x == x && test_dest[ i ].y == y ) || pieces[ test_dest[ i ].x ][ test_dest[ i ].y ] == "E" )
+		if ( ( test_dest[ i ].first == aDestination.first && test_dest[ i ].second == aDestination.second ) || mPieces[ test_dest[ i ].first ][ test_dest[ i ].second ] == "E" )
 		{
 		} // If same place or empty place do nothing
 		else
@@ -214,49 +213,49 @@ void tableau::MoveStraight( int x, int y, destination destinations[ maxpos ], in
 	return;
 }
 
-void tableau::MoveKnight( int x, int y, destination destinations[ maxpos ], int& N_possible )
+void tableau::MoveKnight( const destination& aDestination, destination destinations[ maxpos ], int& N_possible )
 {
 	// Junk destination variable to test before adding
 	destination test_dest[ movepos_K ];
 	// 4 possible moves
 	int i = 0;
-	test_dest[ i ].x = x - 1;
-	test_dest[ i ].y = y - 2;
+	test_dest[ i ].first = aDestination.first - 1;
+	test_dest[ i ].second = aDestination.second - 2;
 	i++;
-	test_dest[ i ].x = x - 1;
-	test_dest[ i ].y = y + 2;
+	test_dest[ i ].first = aDestination.first - 1;
+	test_dest[ i ].second = aDestination.second + 2;
 	i++;
-	test_dest[ i ].x = x + 1;
-	test_dest[ i ].y = y - 2;
+	test_dest[ i ].first = aDestination.first + 1;
+	test_dest[ i ].second = aDestination.second - 2;
 	i++;
-	test_dest[ i ].x = x + 1;
-	test_dest[ i ].y = y + 2;
+	test_dest[ i ].first = aDestination.first + 1;
+	test_dest[ i ].second = aDestination.second + 2;
 	i++;
-	test_dest[ i ].x = x - 2;
-	test_dest[ i ].y = y - 1;
+	test_dest[ i ].first = aDestination.first - 2;
+	test_dest[ i ].second = aDestination.second - 1;
 	i++;
-	test_dest[ i ].x = x - 2;
-	test_dest[ i ].y = y + 1;
+	test_dest[ i ].first = aDestination.first - 2;
+	test_dest[ i ].second = aDestination.second + 1;
 	i++;
-	test_dest[ i ].x = x + 2;
-	test_dest[ i ].y = y - 1;
+	test_dest[ i ].first = aDestination.first + 2;
+	test_dest[ i ].second = aDestination.second - 1;
 	i++;
-	test_dest[ i ].x = x + 2;
-	test_dest[ i ].y = y + 1;
+	test_dest[ i ].first = aDestination.first + 2;
+	test_dest[ i ].second = aDestination.second + 1;
 	i++;
 
 	// If off-limits, return to initial pos
 	for ( i = 0; i < movepos_K; i++ )
 	{
-		if ( test_dest[ i ].x < 0 || test_dest[ i ].x > 5 || test_dest[ i ].y < 0 || test_dest[ i ].y > 5 )
+		if ( test_dest[ i ].first < 0 || test_dest[ i ].first > 5 || test_dest[ i ].second < 0 || test_dest[ i ].second > 5 )
 		{
-			test_dest[ i ].x = x;
-			test_dest[ i ].y = y;
+			test_dest[ i ].first = aDestination.first;
+			test_dest[ i ].second = aDestination.second;
 		}
 	}
 	for ( i = 0; i < movepos_K; i++ )
 	{
-		if ( ( test_dest[ i ].x == x && test_dest[ i ].y == y ) || pieces[ test_dest[ i ].x ][ test_dest[ i ].y ] == "E" )
+		if ( ( test_dest[ i ].first == aDestination.first && test_dest[ i ].second == aDestination.second ) || mPieces[ test_dest[ i ].first ][ test_dest[ i ].second ] == "E" )
 		{
 		} // If same place or empty place do nothing
 		else
@@ -268,7 +267,7 @@ void tableau::MoveKnight( int x, int y, destination destinations[ maxpos ], int&
 	return;
 }
 
-void tableau::MoveWildcard( int x, int y, destination destinations[ maxpos ], int& N_possible )
+void tableau::MoveWildcard( const destination& aDestination, destination destinations[ maxpos ], int& N_possible )
 {
 	// Junk destination variable to test before adding
 	destination test_dest[ maxpos ];
@@ -277,13 +276,13 @@ void tableau::MoveWildcard( int x, int y, destination destinations[ maxpos ], in
 	{
 		for ( int j = 0; j < col; j++ )
 		{
-			test_dest[ col * i + j ].x = i;
-			test_dest[ col * i + j ].y = j;
+			test_dest[ col * i + j ].first = i;
+			test_dest[ col * i + j ].second = j;
 		}
 	}
 	for ( int i = 0; i < maxpos; i++ )
 	{
-		if ( ( test_dest[ i ].x == x && test_dest[ i ].y == y ) || pieces[ test_dest[ i ].x ][ test_dest[ i ].y ] == "E" )
+		if ( ( test_dest[ i ].first == aDestination.first && test_dest[ i ].second == aDestination.second ) || mPieces[ test_dest[ i ].first ][ test_dest[ i ].second ] == "E" )
 		{
 		} // If same place or empty place do nothing
 		else
@@ -295,12 +294,12 @@ void tableau::MoveWildcard( int x, int y, destination destinations[ maxpos ], in
 	return;
 }
 
-destination tableau::Randomize( int x, int y )
+tableau::destination tableau::Randomize( const destination& aDestination )
 {
 	int N_possible = 0;				  // Track number of possibilities
 	destination destinations[ maxpos ]; // Save all possible destinations
 	int dest_number;				  // Random destination number
-	MoveWildcard( x, y, destinations, N_possible );
+	MoveWildcard( aDestination, destinations, N_possible );
 	if ( N_possible > 0 ) // If it's possible
 	{
 		dest_number = rand() % N_possible;
@@ -308,13 +307,23 @@ destination tableau::Randomize( int x, int y )
 	else
 	{
 		dest_number = 0;
-		destinations[ dest_number ].x = -1;
-		destinations[ dest_number ].y = -1;
+		destinations[ dest_number ].first = -1;
+		destinations[ dest_number ].second = -1;
 	}
 	return destinations[ dest_number ];
 }
 
-int tableau::CountPieces()
+const tableau::piece_matrix& tableau::GetPieces() const
+{
+	return mPieces;
+}
+
+void tableau::SetPiece( const destination& aDestination, const std::string& aPiece )
+{
+	mPieces[ aDestination.first ][ aDestination.second ] = aPiece;
+}
+
+int tableau::CountPieces() const
 {
 	// Loop around and count non-empty slots
 	int count = 0;
@@ -322,7 +331,7 @@ int tableau::CountPieces()
 	{
 		for ( int j = 0; j < col; j++ )
 		{
-			if ( pieces[ i ][ j ] != "E" )
+			if ( mPieces[ i ][ j ] != "E" )
 			{
 				count++;
 			}
