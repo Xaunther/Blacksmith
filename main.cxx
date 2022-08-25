@@ -11,7 +11,7 @@
 int main()
 {
 	// Initialize random seed
-	srand( time( NULL ) );
+	srand( static_cast< unsigned int >( time( NULL ) ) );
 
 	history poshistory;
 	history best_poshistory;
