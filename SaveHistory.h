@@ -7,6 +7,6 @@
 #include <array>
 
 using history = std::array<tableau::destination, maxpos + 1>;
-void SaveHistory( const history& aHistory, const int aSteps, tableau& aTableau );
+void SaveHistory( const history& aHistory, const int aSteps, const tableau& aTableau, const tableau& aInitialTableau );
 
 #endif
