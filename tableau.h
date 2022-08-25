@@ -15,16 +15,16 @@ public:
 
 	tableau();
 
-	void Load( std::string );
+	void Load( const std::string& aFileName );
 
 	destination Move( const destination& aDestination );
 
 	destination Randomize( const destination& aDestination );
 
-	void MoveDiagonal( const destination& aDestination, destination[ maxpos ], int&, int steps = -1 );
-	void MoveStraight( const destination& aDestination, destination[ maxpos ], int&, int steps = -1 );
-	void MoveKnight( const destination& aDestination, destination[ maxpos ], int& );
-	void MoveWildcard( const destination& aDestination, destination[ maxpos ], int& );
+	void MoveDiagonal( const destination& aOrigin, destination aDestinations[ maxpos ], int& aCountPossible, int aSteps = -1 );
+	void MoveStraight( const destination& aOrigin, destination aDestinations[ maxpos ], int& aCountPossible, int aSteps = -1 );
+	void MoveKnight( const destination& aOrigin, destination aDestinations[ maxpos ], int& aCountPossible );
+	void MoveWildcard( const destination& aOrigin, destination aDestinations[ maxpos ], int& aCountPossible );
 
 	const piece_matrix& GetPieces() const;
 
