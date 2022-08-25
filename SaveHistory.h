@@ -5,6 +5,6 @@
 #include "destination.h"
 #include "tableau.h"
 
-void SaveHistory(destination[36], int, tableau *);
+void SaveHistory( destination[ 36 ], int, tableau* );
 
 #endif
