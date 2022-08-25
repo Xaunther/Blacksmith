@@ -6,7 +6,6 @@
 #include <fstream>
 #include <stdlib.h>
 #include <string>
-using namespace std;
 
 // Initializer
 tableau::tableau()
@@ -21,10 +20,10 @@ tableau::tableau()
 }
 
 // Load "map" from file, file must follow the codes
-void tableau::Load( string filename )
+void tableau::Load( std::string filename )
 {
-	ifstream infile;
-	string basura;
+	std::ifstream infile;
+	std::string basura;
 	infile.open( filename.c_str() );
 	for ( int i = 0; i < row; i++ )
 	{
@@ -105,17 +104,17 @@ void tableau::MoveDiagonal( int x, int y, destination destinations[ maxpos ], in
 	int i = 0;
 	if ( steps < 0 )
 	{
-		test_dest[ i ].x = x - min( x - 0, y - 0 );
-		test_dest[ i ].y = y - min( x - 0, y - 0 );
+		test_dest[ i ].x = x - std::min( x - 0, y - 0 );
+		test_dest[ i ].y = y - std::min( x - 0, y - 0 );
 		i++;
-		test_dest[ i ].x = x + min( 5 - x, y - 0 );
-		test_dest[ i ].y = y - min( 5 - x, y - 0 );
+		test_dest[ i ].x = x + std::min( 5 - x, y - 0 );
+		test_dest[ i ].y = y - std::min( 5 - x, y - 0 );
 		i++;
-		test_dest[ i ].x = x + min( 5 - x, 5 - y );
-		test_dest[ i ].y = y + min( 5 - x, 5 - y );
+		test_dest[ i ].x = x + std::min( 5 - x, 5 - y );
+		test_dest[ i ].y = y + std::min( 5 - x, 5 - y );
 		i++;
-		test_dest[ i ].x = x - min( x - 0, 5 - y );
-		test_dest[ i ].y = y + min( x - 0, 5 - y );
+		test_dest[ i ].x = x - std::min( x - 0, 5 - y );
+		test_dest[ i ].y = y + std::min( x - 0, 5 - y );
 		i++;
 	}
 	else

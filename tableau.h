@@ -5,13 +5,12 @@
 #include "Constants.h"
 #include "destination.h"
 #include <string>
-using namespace std;
 
 class tableau
 {
 public:
 	tableau();
-	void Load( string );
+	void Load( std::string );
 	destination Move( int, int );
 	destination Randomize( int, int );
 	void MoveDiagonal( int, int, destination[ maxpos ], int&, int steps = -1 );
@@ -21,7 +20,7 @@ public:
 	int CountPieces();
 
 	// Variables
-	string pieces[ row ][ col ]; // Codes for piece type: (E)mpty, (Q)ueen, (B)ishop, (R)ook, (K)night, 1, 2, 3, 4, (W)wildcard
+	std::string pieces[ row ][ col ]; // Codes for piece type: (E)mpty, (Q)ueen, (B)ishop, (R)ook, (K)night, 1, 2, 3, 4, (W)wildcard
 };
 
 #endif
