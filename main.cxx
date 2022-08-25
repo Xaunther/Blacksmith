@@ -1,11 +1,8 @@
 // Main function
 
 #include "SaveHistory.h"
-#include "tableau.h"
 #include <iostream>
 #include <stdlib.h>
-#include <string>
-#include <utility>
 #include <time.h>
 
 int main()
