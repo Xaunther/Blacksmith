@@ -13,3 +13,6 @@ build
 #I/O files no need to update them
 Best-pattern.txt
 board.dat
+
+#Editors
+.vscode
