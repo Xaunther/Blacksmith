@@ -1,12 +1,12 @@
 // Main function
 
-#include "tableau.h"
-#include "destination.h"
 #include "SaveHistory.h"
-#include <string>
-#include <stdlib.h>
-#include <time.h>
+#include "destination.h"
+#include "tableau.h"
 #include <iostream>
+#include <stdlib.h>
+#include <string>
+#include <time.h>
 using namespace std;
 
 int main()

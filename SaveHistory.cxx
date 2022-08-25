@@ -1,9 +1,9 @@
 // Implementation of the function
-#include "tableau.h"
 #include "destination.h"
+#include "tableau.h"
 #include <fstream>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <string>
 using namespace std;
 

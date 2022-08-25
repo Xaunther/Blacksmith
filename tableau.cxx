@@ -2,10 +2,10 @@
 
 #include "tableau.h"
 #include "destination.h"
+#include <algorithm>
+#include <fstream>
 #include <stdlib.h>
 #include <string>
-#include <fstream>
-#include <algorithm>
 using namespace std;
 
 // Initializer

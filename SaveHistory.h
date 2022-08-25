@@ -2,8 +2,8 @@
 #ifndef SaveHistory_h
 #define SaveHistory_h
 
-#include "tableau.h"
 #include "destination.h"
+#include "tableau.h"
 
 void SaveHistory(destination[36], int, tableau *);
 
