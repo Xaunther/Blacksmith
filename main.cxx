@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+tableau::destination InputOrigin();
+int main();
+
 int main()
 {
 	// Initialize random seed
@@ -15,11 +18,6 @@ int main()
 
 	int step = 0;
 	int best_step = 0;
-	// Ask for initial position
-	std::cout << "Initial row? (Number 0-5) (6 for random): ";
-	std::cin >> poshistory[ step ].first;
-	std::cout << "Initial column? (Number 0-5) (6 for random): ";
-	std::cin >> poshistory[ step ].second;
 
 	tableau board; // Initialize board (tableau)
 	tableau initial_board;
@@ -57,4 +55,15 @@ int main()
 	}
 	SaveHistory( best_poshistory, best_step, initial_board );
 	return 0;
+}
+
+tableau::destination InputOrigin()
+{
+	tableau::destination result;
+	// Ask for initial position
+	std::cout << "Initial row? (Number 0-5) (6 for random): ";
+	std::cin >> result.first;
+	std::cout << "Initial column? (Number 0-5) (6 for random): ";
+	std::cin >> result.second;
+	return result;
 }
