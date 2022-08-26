@@ -85,45 +85,40 @@ tableau::destination tableau::Move( const destination& aOrigin )
 		return { -1,-1 };
 }
 
-void tableau::MoveDiagonal( const destination& aOrigin, destinations& aDestinations, std::optional<int> aSteps ) const
+void tableau::MoveDiagonal( const destination& aOrigin, destinations& aDestinations ) const
 {
-	if( !aSteps )
-	{
-		AppendDestination( aDestinations, aOrigin, { aOrigin.first - std::min( aOrigin.first - 0, aOrigin.second - 0 ),
-			aOrigin.second - std::min( aOrigin.first - 0, aOrigin.second - 0 ) } );
-		AppendDestination( aDestinations, aOrigin, { aOrigin.first + std::min( 5 - aOrigin.first, aOrigin.second - 0 ),
-			aOrigin.second - std::min( 5 - aOrigin.first, aOrigin.second - 0 ) } );
-		AppendDestination( aDestinations, aOrigin, { aOrigin.first + std::min( 5 - aOrigin.first, 5 - aOrigin.second ),
-			aOrigin.second + std::min( 5 - aOrigin.first, 5 - aOrigin.second ) } );
-		AppendDestination( aDestinations, aOrigin, { aOrigin.first - std::min( aOrigin.first - 0, 5 - aOrigin.second ),
-			aOrigin.second + std::min( aOrigin.first - 0, 5 - aOrigin.second ) } );
-	}
-	else
-	{
-		AppendDestination( aDestinations, aOrigin, { aOrigin.first - *aSteps, aOrigin.second - *aSteps } );
-		AppendDestination( aDestinations, aOrigin, { aOrigin.first + *aSteps, aOrigin.second - *aSteps } );
-		AppendDestination( aDestinations, aOrigin, { aOrigin.first + *aSteps, aOrigin.second + *aSteps } );
-		AppendDestination( aDestinations, aOrigin, { aOrigin.first - *aSteps, aOrigin.second + *aSteps } );
-	}
-	return;
+	AppendDestination( aDestinations, aOrigin, { aOrigin.first - std::min( aOrigin.first - 0, aOrigin.second - 0 ),
+		aOrigin.second - std::min( aOrigin.first - 0, aOrigin.second - 0 ) } );
+	AppendDestination( aDestinations, aOrigin, { aOrigin.first + std::min( 5 - aOrigin.first, aOrigin.second - 0 ),
+		aOrigin.second - std::min( 5 - aOrigin.first, aOrigin.second - 0 ) } );
+	AppendDestination( aDestinations, aOrigin, { aOrigin.first + std::min( 5 - aOrigin.first, 5 - aOrigin.second ),
+		aOrigin.second + std::min( 5 - aOrigin.first, 5 - aOrigin.second ) } );
+	AppendDestination( aDestinations, aOrigin, { aOrigin.first - std::min( aOrigin.first - 0, 5 - aOrigin.second ),
+		aOrigin.second + std::min( aOrigin.first - 0, 5 - aOrigin.second ) } );
 }
 
-void tableau::MoveStraight( const destination& aOrigin, destinations& aDestinations, std::optional<int> aSteps ) const
+void tableau::MoveDiagonal( const destination& aOrigin, destinations& aDestinations, int aSteps ) const
 {
-	if( !aSteps )
-	{
-		AppendDestination( aDestinations, aOrigin, { 0, aOrigin.second } );
-		AppendDestination( aDestinations, aOrigin, { 5, aOrigin.second } );
-		AppendDestination( aDestinations, aOrigin, { aOrigin.first, 0 } );
-		AppendDestination( aDestinations, aOrigin, { aOrigin.first, 5 } );
-	}
-	else
-	{
-		AppendDestination( aDestinations, aOrigin, { aOrigin.first + *aSteps, aOrigin.second } );
-		AppendDestination( aDestinations, aOrigin, { aOrigin.first - *aSteps, aOrigin.second } );
-		AppendDestination( aDestinations, aOrigin, { aOrigin.first, aOrigin.second + *aSteps } );
-		AppendDestination( aDestinations, aOrigin, { aOrigin.first, aOrigin.second - *aSteps } );
-	}
+	AppendDestination( aDestinations, aOrigin, { aOrigin.first - aSteps, aOrigin.second - aSteps } );
+	AppendDestination( aDestinations, aOrigin, { aOrigin.first + aSteps, aOrigin.second - aSteps } );
+	AppendDestination( aDestinations, aOrigin, { aOrigin.first + aSteps, aOrigin.second + aSteps } );
+	AppendDestination( aDestinations, aOrigin, { aOrigin.first - aSteps, aOrigin.second + aSteps } );
+}
+
+void tableau::MoveStraight( const destination& aOrigin, destinations& aDestinations ) const
+{
+	AppendDestination( aDestinations, aOrigin, { 0, aOrigin.second } );
+	AppendDestination( aDestinations, aOrigin, { 5, aOrigin.second } );
+	AppendDestination( aDestinations, aOrigin, { aOrigin.first, 0 } );
+	AppendDestination( aDestinations, aOrigin, { aOrigin.first, 5 } );
+}
+
+void tableau::MoveStraight( const destination& aOrigin, destinations& aDestinations, int aSteps ) const
+{
+	AppendDestination( aDestinations, aOrigin, { aOrigin.first + aSteps, aOrigin.second } );
+	AppendDestination( aDestinations, aOrigin, { aOrigin.first - aSteps, aOrigin.second } );
+	AppendDestination( aDestinations, aOrigin, { aOrigin.first, aOrigin.second + aSteps } );
+	AppendDestination( aDestinations, aOrigin, { aOrigin.first, aOrigin.second - aSteps } );
 }
 
 void tableau::MoveKnight( const destination& aOrigin, destinations& aDestinations ) const

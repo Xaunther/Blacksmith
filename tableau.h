@@ -6,7 +6,6 @@
 #include <array>
 #include <vector>
 #include <string>
-#include <optional>
 
 class tableau
 {
@@ -25,8 +24,10 @@ public:
 
 	destination Randomize( const destination& aDestination ) const;
 
-	void MoveDiagonal( const destination& aOrigin, destinations& aDestinations, std::optional<int> aSteps = {} ) const;
-	void MoveStraight( const destination& aOrigin, destinations& aDestinations, std::optional<int> aSteps = {} ) const;
+	void MoveDiagonal( const destination& aOrigin, destinations& aDestinations ) const;
+	void MoveDiagonal( const destination& aOrigin, destinations& aDestinations, int aSteps ) const;
+	void MoveStraight( const destination& aOrigin, destinations& aDestinations ) const;
+	void MoveStraight( const destination& aOrigin, destinations& aDestinations, int aSteps ) const;
 	void MoveKnight( const destination& aOrigin, destinations& aDestinations ) const;
 	void MoveWildcard( const destination& aOrigin, destinations& aDestinations ) const;
 
