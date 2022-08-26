@@ -2,11 +2,17 @@
 #ifndef Constants_h
 #define Constants_h
 
-#define row 6
-#define col 6
-#define maxpos 36
-#define movepos 4
-#define movepos_K 8
-#define maxsteps 1000000
+namespace blacksmith
+{
+
+static const unsigned short row = 6;
+static const unsigned short col = 6;
+static const unsigned short maxpos = row * col;
+static const unsigned short movepos = 4;
+static const unsigned short movepos_K = movepos * 2;
+static const unsigned long maxsteps = 1000000;
+static const unsigned short threads = 8;
+
+}
 
 #endif

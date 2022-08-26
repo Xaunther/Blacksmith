@@ -5,6 +5,9 @@
 #include <string>
 #include <set>
 
+namespace blacksmith
+{
+
 namespace
 {
 
@@ -203,3 +206,5 @@ const tableau::piece_matrix& Check( const tableau::piece_matrix& aPieces )
 }
 
 }
+
+};

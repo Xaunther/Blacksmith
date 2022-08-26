@@ -4,6 +4,7 @@
 #include <iostream>
 #include <time.h>
 
+using namespace blacksmith;
 using result = std::pair<history, tableau>;
 
 tableau::destination InputOrigin();

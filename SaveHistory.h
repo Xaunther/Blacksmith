@@ -5,7 +5,12 @@
 #include "tableau.h"
 #include <list>
 
+namespace blacksmith
+{
+
 using history = std::list<tableau::destination>;
 void SaveHistory( const history& aHistory, const tableau& aTableau, const tableau& aInitialTableau );
+
+};
 
 #endif

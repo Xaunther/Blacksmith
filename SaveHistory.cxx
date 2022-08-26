@@ -5,6 +5,9 @@
 #include <iostream>
 #include <string>
 
+namespace blacksmith
+{
+
 void SaveHistory( const history& aHistory, const tableau& aTableau, const tableau& aInitialTableau )
 {
 	std::ofstream outfile;
@@ -26,3 +29,5 @@ void SaveHistory( const history& aHistory, const tableau& aTableau, const tablea
 				outfile << "(" << i << "," << j << "): " << aTableau.GetPieces()[ i ][ j ] << std::endl;
 	outfile.close();
 }
+
+};

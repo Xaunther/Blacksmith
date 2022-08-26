@@ -7,6 +7,9 @@
 #include <vector>
 #include <string>
 
+namespace blacksmith
+{
+
 class tableau
 {
 public:
@@ -46,6 +49,8 @@ private:
 
 	// Variables
 	piece_matrix mPieces; // Codes for piece type: (E)mpty, (Q)ueen, (B)ishop, (R)ook, (K)night, 1, 2, 3, 4, (W)wildcard
+};
+
 };
 
 #endif
