@@ -3,10 +3,10 @@
 #define tableau_h
 
 #include "Constants.h"
-#include <utility>
 #include <array>
 #include <vector>
 #include <string>
+#include <optional>
 
 class tableau
 {
@@ -25,16 +25,23 @@ public:
 
 	destination Randomize( const destination& aDestination ) const;
 
-	void MoveDiagonal( const destination& aOrigin, destinations& aDestinations, int aSteps = -1 ) const;
-	void MoveStraight( const destination& aOrigin, destinations& aDestinations, int aSteps = -1 ) const;
+	void MoveDiagonal( const destination& aOrigin, destinations& aDestinations, std::optional<int> aSteps = {} ) const;
+	void MoveStraight( const destination& aOrigin, destinations& aDestinations, std::optional<int> aSteps = {} ) const;
 	void MoveKnight( const destination& aOrigin, destinations& aDestinations ) const;
 	void MoveWildcard( const destination& aOrigin, destinations& aDestinations ) const;
 
 	const piece_matrix& GetPieces() const;
 
+	const std::string& GetPiece( const destination& aDestination ) const;
+
 	void SetPiece( const destination& aDestination, const std::string& aPiece );
 
+	bool IsInside( const destination& aDestination ) const;
+
 	int CountPieces() const;
+
+private:
+	void AppendDestination( destinations& aDestinations, const destination& aOrigin, const destination& aDestination ) const;
 
 	// Variables
 	piece_matrix mPieces; // Codes for piece type: (E)mpty, (Q)ueen, (B)ishop, (R)ook, (K)night, 1, 2, 3, 4, (W)wildcard

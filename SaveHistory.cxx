@@ -15,15 +15,15 @@ void SaveHistory( const history& aHistory, const tableau& aTableau, const tablea
 	outfile << "----------------------" << std::endl;
 
 	unsigned int index = 0;
-	for ( const auto& epoch : aHistory )
+	for( const auto& epoch : aHistory )
 		outfile << std::setw( 4 ) << index++ << "     (" << epoch.first << "," << epoch.second << ")     " << std::setw( 1 ) << aInitialTableau.GetPieces()[ epoch.first ][ epoch.second ] << std::endl;
 	// Write also remaining pieces
 	outfile << "----------------------" << std::endl;
 	outfile << "   Remaining Pieces   " << std::endl;
 	outfile << "----------------------" << std::endl;
-	for ( int i = 0; i < row; i++ )
-		for ( int j = 0; j < col; j++ )
-			if ( aTableau.GetPieces()[ i ][ j ] != "E" || true )
+	for( int i = 0; i < row; i++ )
+		for( int j = 0; j < col; j++ )
+			if( aTableau.GetPieces()[ i ][ j ] != "E" )
 				outfile << "(" << i << "," << j << "): " << aTableau.GetPieces()[ i ][ j ] << std::endl;
 	outfile.close();
 }
