@@ -4,7 +4,10 @@
 #include <iostream>
 #include <time.h>
 
+using result = std::pair<history, tableau>;
+
 tableau::destination InputOrigin();
+result FindBestMoves( const tableau& aInitialBoard, const history::value_type& aInitialPosition, const unsigned int& aNTries );
 int main();
 
 int main()
@@ -12,30 +15,12 @@ int main()
 	// Initialize random seed
 	srand( static_cast< unsigned int >( time( NULL ) ) );
 
-	history best_poshistory;
-	history::value_type epoch = InputOrigin();
+	const auto& initialPosition = InputOrigin();
+	const tableau initialBoard( "board.dat" );
 
-	tableau best_board; // Initialize board (tableau)
-	const tableau initial_board( "board.dat" );
-	int N_pieces = initial_board.CountPieces(); // Count how many pieces there are (max number of steps one can achieve)
+	const auto& result = FindBestMoves( initialBoard, initialPosition, maxsteps );
 
-	for( int i = 0; i < maxsteps && best_poshistory.size() < N_pieces; i++ ) // Iterate many times
-	{
-		tableau board{ initial_board };
-		history poshistory = { epoch };
-		// Randomize position if requested
-		if( poshistory.back().first == row || poshistory.back().second == col )
-			poshistory.back() = initial_board.Randomize( poshistory.back() );
-		while( poshistory.back().first > -1 ) // When no moves available, it is -1
-			poshistory.emplace_back( board.Move( poshistory.back() ) );
-		poshistory.pop_back();
-		if( poshistory.size() > best_poshistory.size() ) // New record!
-		{
-			best_board = std::move( board );
-			best_poshistory = std::move( poshistory );
-		}
-	}
-	SaveHistory( best_poshistory, best_board, initial_board );
+	SaveHistory( result.first, result.second, initialBoard );
 	return 0;
 }
 
@@ -48,4 +33,29 @@ tableau::destination InputOrigin()
 	std::cout << "Initial column? (Number 0-" << col - 1 << ") (" << col << " for random): ";
 	std::cin >> result.second;
 	return result;
+}
+
+result FindBestMoves( const tableau& aInitialBoard, const history::value_type& aInitialPosition, const unsigned int& aNTries )
+{
+	result bestMoves;
+	const int N_pieces = aInitialBoard.CountPieces(); // Count how many pieces there are (max number of steps one can achieve)
+
+	for( unsigned int i = 0; i < aNTries && bestMoves.first.size() < N_pieces; i++ ) // Iterate many times
+	{
+		history poshistory = { aInitialPosition };
+		tableau board{ aInitialBoard };
+		// Randomize position if requested
+		if( poshistory.back().first == row || poshistory.back().second == col )
+			poshistory.back() = aInitialBoard.Randomize( poshistory.back() );
+		while( poshistory.back().first > -1 ) // When no moves available, it is -1
+			poshistory.emplace_back( board.Move( poshistory.back() ) );
+		poshistory.pop_back();
+		if( poshistory.size() > bestMoves.first.size() ) // New record!
+		{
+			bestMoves.first = std::move( poshistory );
+			bestMoves.second = std::move( board );
+		}
+	}
+
+	return bestMoves;
 }
