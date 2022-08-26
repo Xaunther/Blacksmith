@@ -1,6 +1,5 @@
 // Implementation of the function
 #include "SaveHistory.h"
-#include "tableau.h"
 #include <fstream>
 #include <iomanip>
 #include <iostream>

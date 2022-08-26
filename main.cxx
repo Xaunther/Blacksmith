@@ -2,7 +2,6 @@
 
 #include "SaveHistory.h"
 #include <iostream>
-#include <stdlib.h>
 #include <time.h>
 
 tableau::destination InputOrigin();
@@ -20,17 +19,17 @@ int main()
 	const tableau initial_board( "board.dat" );
 	int N_pieces = initial_board.CountPieces(); // Count how many pieces there are (max number of steps one can achieve)
 
-	for ( int i = 0; i < maxsteps && best_poshistory.size() < N_pieces; i++ ) // Iterate many times
+	for( int i = 0; i < maxsteps && best_poshistory.size() < N_pieces; i++ ) // Iterate many times
 	{
 		tableau board{ initial_board };
 		history poshistory = { epoch };
 		// Randomize position if requested
-		if ( poshistory.back().first == row || poshistory.back().second == col )
+		if( poshistory.back().first == row || poshistory.back().second == col )
 			poshistory.back() = initial_board.Randomize( poshistory.back() );
-		while ( poshistory.back().first > -1 ) // When no moves available, it is -1
+		while( poshistory.back().first > -1 ) // When no moves available, it is -1
 			poshistory.emplace_back( board.Move( poshistory.back() ) );
 		poshistory.pop_back();
-		if ( poshistory.size() > best_poshistory.size() ) // New record!
+		if( poshistory.size() > best_poshistory.size() ) // New record!
 		{
 			best_board = std::move( board );
 			best_poshistory = std::move( poshistory );
