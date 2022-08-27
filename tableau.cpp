@@ -44,7 +44,7 @@ void tableau::Load( const std::string& aFileName )
 }
 
 // Move from current place to another suitable one, randomly. Return next point
-tableau::destination tableau::Move( const destination& aOrigin )
+tableau::destination tableau::Move( const destination& aOrigin, std::mt19937_64& aRNG )
 {
 	destinations destinations; // Save all possible aDestinations
 	if( mPieces[ aOrigin.first ][ aOrigin.second ] == "E" )		  // Empty
@@ -83,7 +83,7 @@ tableau::destination tableau::Move( const destination& aOrigin )
 	}
 	mPieces[ aOrigin.first ][ aOrigin.second ] = "E";
 	if( destinations.size() > 0 ) // If it's possible
-		return destinations[ rand() % destinations.size() ];
+		return destinations[ aRNG() % destinations.size() ];
 	else
 		return { -1,-1 };
 }

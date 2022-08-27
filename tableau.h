@@ -6,6 +6,7 @@
 #include <array>
 #include <vector>
 #include <string>
+#include <random>
 
 namespace blacksmith
 {
@@ -23,7 +24,7 @@ public:
 
 	void Load( const std::string& aFileName );
 
-	destination Move( const destination& aDestination );
+	destination Move( const destination& aDestination, std::mt19937_64& aRNG );
 
 	destination Randomize( const destination& aDestination ) const;
 
