@@ -21,7 +21,7 @@ void result::FindBest( const tableau& aInitialBoard, const history::value_type& 
 {
 	const int N_pieces = aInitialBoard.CountPieces(); // Count how many pieces there are (max number of steps one can achieve)
 
-	for( unsigned int i = 0; i < aNTries && mHistory.size() < N_pieces; i++ ) // Iterate many times
+	for( unsigned long i = 0; i < aNTries && mHistory.size() < N_pieces; i++ ) // Iterate many times
 	{
 		history poshistory = { aInitialPosition };
 		tableau board{ aInitialBoard };
