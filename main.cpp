@@ -29,11 +29,10 @@ int main()
 	threads resultThreads;
 	resultThreads.reserve( N_threads );
 	for( unsigned short threadIndex = 0; threadIndex < N_threads; ++threadIndex )
-		resultThreads.emplace_back( &result::FindBest, &bestResult, initialBoard, initialPosition, maxsteps / N_threads, std::ref( RNG ) );
+		resultThreads.emplace_back( &result::FindBest, &bestResult, initialBoard, initialPosition, maxsteps, std::ref( RNG ) );
 
 	for( auto& resultThread : resultThreads )
 		resultThread.join();
-
 	SaveHistory( bestResult.GetHistory(), bestResult.GetTableau(), initialBoard );
 	return 0;
 }

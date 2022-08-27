@@ -13,12 +13,16 @@ const tableau& result::GetTableau() const
 {
 	return mTableau;
 }
+const std::atomic_ulong& result::GetCounter() const
+{
+	return mCounter;
+}
 
 void result::FindBest( const tableau& aInitialBoard, const history::value_type& aInitialPosition, const unsigned int& aNTries, std::mt19937_64& aRNG )
 {
-	const int N_pieces = aInitialBoard.CountPieces(); // Count how many pieces there are (max number of steps one can achieve)
+	const auto& N_pieces = aInitialBoard.CountPieces(); // Count how many pieces there are (max number of steps one can achieve)
 
-	for( unsigned long i = 0; i < aNTries && mHistory.size() < N_pieces; i++ ) // Iterate many times
+	for( ; mCounter < aNTries && mHistory.size() < N_pieces; mCounter++ ) // Iterate many times
 	{
 		history poshistory = { aInitialPosition };
 		tableau board{ aInitialBoard };
