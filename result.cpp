@@ -1,11 +1,8 @@
 #include "result.h"
 #include <iostream>
-#include <mutex>
 
 namespace blacksmith
 {
-
-std::mutex resultMutex;
 
 const result::history& result::GetHistory() const
 {
@@ -31,13 +28,12 @@ void result::FindBest( const tableau& aInitialBoard, const history::value_type& 
 		while( poshistory.back().first > -1 ) // When no moves available, it is -1
 			poshistory.emplace_back( board.Move( poshistory.back(), aRNG ) );
 		poshistory.pop_back();
-		resultMutex.lock();
+		std::lock_guard lock( mMutex );
 		if( poshistory.size() > mHistory.size() ) // New record!
 		{
 			mHistory = std::move( poshistory );
 			mTableau = std::move( board );
 		}
-		resultMutex.unlock();
 	}
 }
 

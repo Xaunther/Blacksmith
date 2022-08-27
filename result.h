@@ -1,5 +1,6 @@
 #include "tableau.h"
 #include <list>
+#include <mutex>
 
 namespace blacksmith
 {
@@ -17,6 +18,7 @@ public:
 private:
 	history mHistory;
 	tableau mTableau;
+	std::mutex mMutex;
 };
 
 };
