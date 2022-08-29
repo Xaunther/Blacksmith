@@ -13,6 +13,7 @@ namespace
 {
 
 tableau::destination InputOrigin();
+bool InputSpeedOverScore();
 
 }
 
@@ -23,13 +24,14 @@ int main()
 	std::mt19937_64 RNG{ rd() };
 
 	const auto& initialPosition = InputOrigin();
+	const auto& speedOverScore = InputSpeedOverScore();
 	const tableau initialBoard( "board.dat" );
 
 	result bestResult;
 	threads resultThreads;
 	resultThreads.reserve( N_threads );
 	for( unsigned short threadIndex = 0; threadIndex < N_threads; ++threadIndex )
-		resultThreads.emplace_back( &result::FindBest, &bestResult, initialBoard, initialPosition, maxsteps, std::ref( RNG ) );
+		resultThreads.emplace_back( &result::FindBest, &bestResult, initialBoard, initialPosition, maxsteps, std::ref( RNG ), speedOverScore );
 
 	for( auto& resultThread : resultThreads )
 		resultThread.join();
@@ -49,6 +51,15 @@ tableau::destination InputOrigin()
 	std::cout << "Initial column? (Number 0-" << col - 1 << ") (" << col << " for random): ";
 	std::cin >> result.second;
 	return result;
+}
+
+bool InputSpeedOverScore()
+{
+	std::string result;
+	// Ask for speed or score
+	std::cout << "Prefer speed over score? [y/N]: ";
+	std::cin >> result;
+	return result == "y" || result == "Y";
 }
 
 }
