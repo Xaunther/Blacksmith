@@ -88,7 +88,8 @@ unsigned short tableau::CComboState::Update( const std::string& aPiece )
 }
 
 // Initializer
-tableau::tableau()
+tableau::tableau() :
+	mScore( 0 )
 {
 	for( auto& _row : mPieces )
 		for( auto& piece : _row )
@@ -233,6 +234,11 @@ const tableau::piece_matrix& tableau::GetPieces() const
 const std::string& tableau::GetPiece( const destination& aDestination ) const
 {
 	return mPieces.at( aDestination.first ).at( aDestination.second );
+}
+
+const unsigned short& tableau::GetScore() const
+{
+	return mScore;
 }
 
 void tableau::SetPiece( const destination& aOrigin, const std::string& aPiece )

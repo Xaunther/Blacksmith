@@ -83,6 +83,8 @@ public:
 
 	const std::string& GetPiece( const destination& aDestination ) const;
 
+	const unsigned short& GetScore() const;
+
 	void SetPiece( const destination& aDestination, const std::string& aPiece );
 
 	bool IsInside( const destination& aDestination ) const;
@@ -97,6 +99,9 @@ private:
 
 	// State of the current combination
 	CComboState mComboState;
+
+	// Accumulated score
+	unsigned short mScore;
 };
 
 };
