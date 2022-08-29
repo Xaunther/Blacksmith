@@ -15,7 +15,7 @@ public:
 	const tableau& GetTableau() const;
 	const std::atomic_ulong& GetCounter() const;
 
-	void FindBest( const tableau& aInitialBoard, const history::value_type& aInitialPosition, const unsigned int& aNTries, std::mt19937_64& aRNG );
+	void FindBest( const tableau& aInitialBoard, const history::value_type& aInitialPosition, const unsigned int& aNTries, std::mt19937_64& aRNG, const bool aSpeed );
 
 	bool IsBetterResult( const history::size_type& aCountHits, const unsigned short& aScore ) const;
 
