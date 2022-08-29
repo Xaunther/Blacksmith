@@ -12,20 +12,115 @@ namespace
 {
 
 static const std::set<std::string> PIECES = { "Q","B","R","K","W","E","1","2","3","4" };
+static const std::set<std::string> CHESS_PIECES = { "Q","B","R","K" };
+static const std::set<std::string> NUMBER_PIECES = { "1","2","3","4" };
 
 const tableau::piece_matrix& Check( const tableau::piece_matrix& aPieces );
 
 }
 
+tableau::CComboState::CSetState::CSetState() :
+	mCount( 0 )
+{
+	mPieceSequence.reserve( CHESS_PIECES.size() );
+}
+
+unsigned short tableau::CComboState::CSetState::Update( const std::string& aPiece )
+{
+	// If it is a wildcard, just keep it going!
+	if( aPiece == "W" )
+		mPieceSequence.push_back( aPiece );
+	// If it continues the sequence
+	else if( !mChessSet || *mChessSet == CHESS_PIECES.contains( aPiece ) )
+	{
+		const auto& found = std::find( mPieceSequence.begin(), mPieceSequence.end(), aPiece );
+		// If repeated, delete that portion and reset count before adding new
+		if( found != mPieceSequence.end() )
+		{
+			mPieceSequence.erase( mPieceSequence.begin(), found + 1 );
+			mCount = 0;
+		}
+		mPieceSequence.push_back( aPiece );
+		mChessSet = CHESS_PIECES.contains( aPiece );
+
+	}
+	// Otherwise, reset
+	else
+	{
+		mPieceSequence.clear();
+		mPieceSequence.push_back( aPiece );
+		mChessSet = !*mChessSet;
+		mCount = 0;
+	}
+
+	// Detect score given by this piece
+	if( mPieceSequence.size() == CHESS_PIECES.size() )
+	{
+		++mCount;
+		mPieceSequence.clear();
+		mChessSet = !*mChessSet;
+		return 20 * mCount;
+	}
+	else
+		return 1;
+}
+
+void tableau::CComboState::CSetState::Reset()
+{
+	*this = CSetState();
+}
+
+tableau::CComboState::CMultiState::CMultiState() :
+	mPiece( "E" ),
+	mCount( 0 )
+{
+}
+
+unsigned short tableau::CComboState::CMultiState::Update( const std::string& aPiece )
+{
+	if( mPiece == aPiece )
+		++mCount;
+	else
+	{
+		mPiece = aPiece;
+		mCount = 1;
+	}
+	return mCount;
+}
+
+void tableau::CComboState::CMultiState::Reset()
+{
+	*this = CMultiState();
+}
+
+unsigned short tableau::CComboState::Update( const std::string& aPiece )
+{
+	const auto& setScore = mSetState.Update( aPiece );
+	if( setScore > 1 )
+	{
+		mMultiState.Reset();
+		return setScore;
+	}
+	const auto& multiScore = mMultiState.Update( aPiece );
+	if( multiScore > 1 )
+	{
+		mSetState.Reset();
+		return multiScore;
+	}
+	return 1;
+}
+
 // Initializer
-tableau::tableau()
+tableau::tableau() :
+	mScore( 0 )
 {
 	for( auto& _row : mPieces )
 		for( auto& piece : _row )
 			piece = "E";
 }
 
-tableau::tableau( const std::string& aFileName )
+tableau::tableau( const std::string& aFileName ) :
+	mScore( 0 )
 {
 	Load( aFileName );
 	Check( mPieces );
@@ -81,6 +176,7 @@ tableau::destination tableau::Move( const destination& aOrigin, std::mt19937_64&
 		MoveDiagonal( aOrigin, destinations, std::stoi( mPieces[ aOrigin.first ][ aOrigin.second ] ) );
 		MoveStraight( aOrigin, destinations, std::stoi( mPieces[ aOrigin.first ][ aOrigin.second ] ) );
 	}
+	mScore += mComboState.Update( mPieces[ aOrigin.first ][ aOrigin.second ] );
 	mPieces[ aOrigin.first ][ aOrigin.second ] = "E";
 	if( destinations.size() > 0 ) // If it's possible
 		return destinations[ aRNG() % destinations.size() ];
@@ -163,6 +259,11 @@ const tableau::piece_matrix& tableau::GetPieces() const
 const std::string& tableau::GetPiece( const destination& aDestination ) const
 {
 	return mPieces.at( aDestination.first ).at( aDestination.second );
+}
+
+const unsigned short& tableau::GetScore() const
+{
+	return mScore;
 }
 
 void tableau::SetPiece( const destination& aOrigin, const std::string& aPiece )

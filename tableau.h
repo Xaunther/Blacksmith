@@ -7,12 +7,60 @@
 #include <vector>
 #include <string>
 #include <random>
+#include <optional>
 
 namespace blacksmith
 {
 
 class tableau
 {
+	class CComboState
+	{
+		class CSetState
+		{
+		public:
+			CSetState();
+
+			// Updates current state with the piece hit. Returns score for hitting such piece
+			unsigned short Update( const std::string& aPiece );
+
+			void Reset();
+
+		private:
+			// Current piece sequence
+			std::vector<std::string> mPieceSequence;
+			// True if current set is chess, false if it is a number set. Undefined if any.
+			std::optional<bool> mChessSet;
+			// Sets completed
+			unsigned short mCount;
+		};
+
+		class CMultiState
+		{
+		public:
+			CMultiState();
+
+			// Updates current state with the piece hit. Returns score for hitting such piece
+			unsigned short Update( const std::string& aPiece );
+
+			void Reset();
+
+		private:
+			// Current piece being repeated
+			std::string mPiece;
+			// Number of repetitions
+			unsigned short mCount;
+		};
+
+	public:
+		// Updates set and multi states with the piece hit. Returrns score for hitting such piece
+		unsigned short Update( const std::string& aPiece );
+
+	private:
+		CSetState mSetState;
+		CMultiState mMultiState;
+	};
+
 public:
 	using destination = std::pair<int, int>;
 	using destinations = std::vector<destination>;
@@ -39,6 +87,8 @@ public:
 
 	const std::string& GetPiece( const destination& aDestination ) const;
 
+	const unsigned short& GetScore() const;
+
 	void SetPiece( const destination& aDestination, const std::string& aPiece );
 
 	bool IsInside( const destination& aDestination ) const;
@@ -50,6 +100,12 @@ private:
 
 	// Variables
 	piece_matrix mPieces; // Codes for piece type: (E)mpty, (Q)ueen, (B)ishop, (R)ook, (K)night, 1, 2, 3, 4, (W)wildcard
+
+	// State of the current combination
+	CComboState mComboState;
+
+	// Accumulated score
+	unsigned short mScore;
 };
 
 };

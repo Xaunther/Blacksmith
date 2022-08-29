@@ -1,5 +1,4 @@
 #include "result.h"
-#include <iostream>
 
 namespace blacksmith
 {
@@ -20,9 +19,7 @@ const std::atomic_ulong& result::GetCounter() const
 
 void result::FindBest( const tableau& aInitialBoard, const history::value_type& aInitialPosition, const unsigned int& aNTries, std::mt19937_64& aRNG )
 {
-	const auto& N_pieces = aInitialBoard.CountPieces(); // Count how many pieces there are (max number of steps one can achieve)
-
-	for( ; mCounter < aNTries && mHistory.size() < N_pieces; mCounter++ ) // Iterate many times
+	for( ; mCounter < aNTries; mCounter++ ) // Iterate many times
 	{
 		history poshistory = { aInitialPosition };
 		tableau board{ aInitialBoard };
@@ -33,12 +30,17 @@ void result::FindBest( const tableau& aInitialBoard, const history::value_type& 
 			poshistory.emplace_back( board.Move( poshistory.back(), aRNG ) );
 		poshistory.pop_back();
 		std::lock_guard lock( mMutex );
-		if( poshistory.size() > mHistory.size() ) // New record!
+		if( IsBetterResult( poshistory.size(), board.GetScore() ) ) // New record!
 		{
 			mHistory = std::move( poshistory );
 			mTableau = std::move( board );
 		}
 	}
+}
+
+bool result::IsBetterResult( const history::size_type& aCountHits, const unsigned short& aScore ) const
+{
+	return ( aCountHits > mHistory.size() ) || ( aCountHits == mHistory.size() && aScore > mTableau.GetScore() );
 }
 
 };
