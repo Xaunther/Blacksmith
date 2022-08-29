@@ -19,7 +19,7 @@ const std::atomic_ulong& result::GetCounter() const
 
 void result::FindBest( const tableau& aInitialBoard, const history::value_type& aInitialPosition, const unsigned int& aNTries, std::mt19937_64& aRNG, const bool aSpeed )
 {
-	const auto& targetPieces = aSpeed ? aInitialBoard.CountPieces() : maxpos;
+	const auto& targetPieces = aSpeed ? aInitialBoard.CountPieces() : maxpos + 1;
 	for( ; mCounter < aNTries && mHistory.size() < targetPieces; mCounter++ ) // Iterate many times
 	{
 		history poshistory = { aInitialPosition };
