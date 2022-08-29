@@ -41,6 +41,7 @@ unsigned short tableau::CComboState::CSetState::Update( const std::string& aPiec
 			mCount = 0;
 		}
 		mPieceSequence.push_back( aPiece );
+		mChessSet = CHESS_PIECES.contains( aPiece );
 
 	}
 	// Otherwise, reset
@@ -64,6 +65,11 @@ unsigned short tableau::CComboState::CSetState::Update( const std::string& aPiec
 		return 1;
 }
 
+void tableau::CComboState::CSetState::Reset()
+{
+	*this = CSetState();
+}
+
 tableau::CComboState::CMultiState::CMultiState() :
 	mPiece( "E" ),
 	mCount( 0 )
@@ -82,9 +88,26 @@ unsigned short tableau::CComboState::CMultiState::Update( const std::string& aPi
 	return mCount;
 }
 
+void tableau::CComboState::CMultiState::Reset()
+{
+	*this = CMultiState();
+}
+
 unsigned short tableau::CComboState::Update( const std::string& aPiece )
 {
-	return mSetState.Update( aPiece ) * mMultiState.Update( aPiece );
+	const auto& setScore = mSetState.Update( aPiece );
+	if( setScore > 1 )
+	{
+		mMultiState.Reset();
+		return setScore;
+	}
+	const auto& multiScore = mMultiState.Update( aPiece );
+	if( multiScore > 1 )
+	{
+		mSetState.Reset();
+		return multiScore;
+	}
+	return 1;
 }
 
 // Initializer
@@ -96,7 +119,8 @@ tableau::tableau() :
 			piece = "E";
 }
 
-tableau::tableau( const std::string& aFileName )
+tableau::tableau( const std::string& aFileName ) :
+	mScore( 0 )
 {
 	Load( aFileName );
 	Check( mPieces );

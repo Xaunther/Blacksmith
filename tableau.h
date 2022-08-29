@@ -24,6 +24,8 @@ class tableau
 			// Updates current state with the piece hit. Returns score for hitting such piece
 			unsigned short Update( const std::string& aPiece );
 
+			void Reset();
+
 		private:
 			// Current piece sequence
 			std::vector<std::string> mPieceSequence;
@@ -40,6 +42,8 @@ class tableau
 
 			// Updates current state with the piece hit. Returns score for hitting such piece
 			unsigned short Update( const std::string& aPiece );
+
+			void Reset();
 
 		private:
 			// Current piece being repeated
