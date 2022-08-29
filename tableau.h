@@ -47,6 +47,14 @@ class tableau
 			// Number of repetitions
 			unsigned short mCount;
 		};
+
+	public:
+		// Updates set and multi states with the piece hit. Returrns score for hitting such piece
+		unsigned short Update( const std::string& aPiece );
+
+	private:
+		CSetState mSetState;
+		CMultiState mMultiState;
 	};
 
 public:

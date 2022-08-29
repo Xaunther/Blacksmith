@@ -82,6 +82,10 @@ unsigned short tableau::CComboState::CMultiState::Update( const std::string& aPi
 	return mCount;
 }
 
+unsigned short tableau::CComboState::Update( const std::string& aPiece )
+{
+	return mSetState.Update( aPiece ) * mMultiState.Update( aPiece );
+}
 
 // Initializer
 tableau::tableau()
