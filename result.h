@@ -1,6 +1,7 @@
 #include "tableau.h"
 #include <list>
 #include <mutex>
+#include <atomic>
 
 namespace blacksmith
 {
