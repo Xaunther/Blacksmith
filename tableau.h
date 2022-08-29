@@ -13,6 +13,19 @@ namespace blacksmith
 
 class tableau
 {
+	class CComboState
+	{
+		class CSetState
+		{
+
+		};
+
+		class CMultiState
+		{
+
+		};
+	};
+
 public:
 	using destination = std::pair<int, int>;
 	using destinations = std::vector<destination>;
@@ -50,6 +63,9 @@ private:
 
 	// Variables
 	piece_matrix mPieces; // Codes for piece type: (E)mpty, (Q)ueen, (B)ishop, (R)ook, (K)night, 1, 2, 3, 4, (W)wildcard
+
+	// State of the current combination
+	CComboState mComboState;
 };
 
 };

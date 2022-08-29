@@ -12,6 +12,8 @@ namespace
 {
 
 static const std::set<std::string> PIECES = { "Q","B","R","K","W","E","1","2","3","4" };
+static const std::set<std::string> CHESS_PIECES = { "Q","B","R","K","W" };
+static const std::set<std::string> NUMBER_PIECES = { "1","2","3","4","W" };
 
 const tableau::piece_matrix& Check( const tableau::piece_matrix& aPieces );
 
