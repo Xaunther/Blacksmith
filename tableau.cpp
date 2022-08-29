@@ -19,6 +19,25 @@ const tableau::piece_matrix& Check( const tableau::piece_matrix& aPieces );
 
 }
 
+tableau::CComboState::CMultiState::CMultiState() :
+	mPiece( "E" ),
+	mCount( 0 )
+{
+}
+
+unsigned short tableau::CComboState::CMultiState::Update( const std::string& aPiece )
+{
+	if( mPiece == aPiece )
+		++mCount;
+	else
+	{
+		mPiece = aPiece;
+		mCount = 1;
+	}
+	return mCount;
+}
+
+
 // Initializer
 tableau::tableau()
 {

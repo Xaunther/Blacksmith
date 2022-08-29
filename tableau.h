@@ -22,7 +22,13 @@ class tableau
 
 		class CMultiState
 		{
-
+			CMultiState();
+			// Updates current state with the piece hit. Returns score for hitting such piece
+			unsigned short Update( const std::string& aPiece );
+			// Current piece being repeated
+			std::string mPiece;
+			// Number of repetitions
+			unsigned short mCount;
 		};
 	};
 
