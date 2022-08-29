@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <random>
+#include <optional>
 
 namespace blacksmith
 {
@@ -17,14 +18,30 @@ class tableau
 	{
 		class CSetState
 		{
+		public:
+			CSetState();
 
+			// Updates current state with the piece hit. Returns score for hitting such piece
+			unsigned short Update( const std::string& aPiece );
+
+		private:
+			// Current piece sequence
+			std::vector<std::string> mPieceSequence;
+			// True if current set is chess, false if it is a number set. Undefined if any.
+			std::optional<bool> mChessSet;
+			// Sets completed
+			unsigned short mCount;
 		};
 
 		class CMultiState
 		{
+		public:
 			CMultiState();
+
 			// Updates current state with the piece hit. Returns score for hitting such piece
 			unsigned short Update( const std::string& aPiece );
+
+		private:
 			// Current piece being repeated
 			std::string mPiece;
 			// Number of repetitions

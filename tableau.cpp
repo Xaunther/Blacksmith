@@ -12,11 +12,56 @@ namespace
 {
 
 static const std::set<std::string> PIECES = { "Q","B","R","K","W","E","1","2","3","4" };
-static const std::set<std::string> CHESS_PIECES = { "Q","B","R","K","W" };
-static const std::set<std::string> NUMBER_PIECES = { "1","2","3","4","W" };
+static const std::set<std::string> CHESS_PIECES = { "Q","B","R","K" };
+static const std::set<std::string> NUMBER_PIECES = { "1","2","3","4" };
 
 const tableau::piece_matrix& Check( const tableau::piece_matrix& aPieces );
 
+}
+
+tableau::CComboState::CSetState::CSetState() :
+	mCount( 0 )
+{
+	mPieceSequence.reserve( CHESS_PIECES.size() );
+}
+
+unsigned short tableau::CComboState::CSetState::Update( const std::string& aPiece )
+{
+	// If it is a wildcard, just keep it going!
+	if( aPiece == "W" )
+		mPieceSequence.push_back( aPiece );
+	// If it continues the sequence
+	else if( !mChessSet || *mChessSet == CHESS_PIECES.contains( aPiece ) )
+	{
+		const auto& found = std::find( mPieceSequence.begin(), mPieceSequence.end(), aPiece );
+		// If repeated, delete that portion and reset count before adding new
+		if( found != mPieceSequence.end() )
+		{
+			mPieceSequence.erase( mPieceSequence.begin(), found + 1 );
+			mCount = 0;
+		}
+		mPieceSequence.push_back( aPiece );
+
+	}
+	// Otherwise, reset
+	else
+	{
+		mPieceSequence.clear();
+		mPieceSequence.push_back( aPiece );
+		mChessSet = !*mChessSet;
+		mCount = 0;
+	}
+
+	// Detect score given by this piece
+	if( mPieceSequence.size() == CHESS_PIECES.size() )
+	{
+		++mCount;
+		mPieceSequence.clear();
+		mChessSet = !*mChessSet;
+		return 20 * mCount;
+	}
+	else
+		return 1;
 }
 
 tableau::CComboState::CMultiState::CMultiState() :
