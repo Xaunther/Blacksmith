@@ -152,6 +152,7 @@ tableau::destination tableau::Move( const destination& aOrigin, std::mt19937_64&
 		MoveDiagonal( aOrigin, destinations, std::stoi( mPieces[ aOrigin.first ][ aOrigin.second ] ) );
 		MoveStraight( aOrigin, destinations, std::stoi( mPieces[ aOrigin.first ][ aOrigin.second ] ) );
 	}
+	mScore += mComboState.Update( mPieces[ aOrigin.first ][ aOrigin.second ] );
 	mPieces[ aOrigin.first ][ aOrigin.second ] = "E";
 	if( destinations.size() > 0 ) // If it's possible
 		return destinations[ aRNG() % destinations.size() ];
