@@ -8,6 +8,7 @@
 *.layout
 *.win
 build
+lib
 *.code-workspace
 
 #I/O files no need to update them
