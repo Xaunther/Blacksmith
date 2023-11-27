@@ -1,7 +1,6 @@
 # Core source files
 SET(BLACKSMITH_CORE_SOURCE
 	src/CResult.cpp
-	src/SaveHistory.cpp
 	src/CTableau.cpp
 )
 
@@ -12,7 +11,6 @@ SET(BLACKSMITH_CORE_INTERNAL_HEADERS)
 SET(BLACKSMITH_CORE_EXTERNAL_HEADERS
 	include/Constants.h
 	include/CResult.h
-	include/SaveHistory.h
 	include/CTableau.h
 )
 

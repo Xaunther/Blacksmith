@@ -1,5 +1,8 @@
 #include "CResult.h"
 
+#include <fstream>
+#include <iomanip>
+
 namespace blacksmith
 {
 
@@ -43,5 +46,27 @@ bool CResult::IsBetterResult( const history::size_type& aCountHits, const unsign
 {
 	return ( aCountHits > mHistory.size() ) || ( aCountHits == mHistory.size() && aScore > mTableau.GetScore() );
 }
+
+void CResult::SaveHistory( std::string_view aOutputFileName, const CTableau& aInitialTableau ) const
+{
+	std::ofstream outfile;
+	outfile.open( aOutputFileName.data() );
+	outfile << "Step #   (i,j)   Piece" << std::endl;
+	outfile << "----------------------" << std::endl;
+
+	unsigned int index = 0;
+	for( const auto& epoch : mHistory )
+		outfile << std::setw( 4 ) << index++ << "     (" << epoch.first << "," << epoch.second << ")     " << std::setw( 1 ) << aInitialTableau.GetPieces()[ epoch.first ][ epoch.second ] << std::endl;
+	// Write also remaining pieces
+	outfile << "----------------------" << std::endl;
+	outfile << "   Remaining Pieces   " << std::endl;
+	outfile << "----------------------" << std::endl;
+	for( int i = 0; i < ROW; i++ )
+		for( int j = 0; j < COL; j++ )
+			if( mTableau.GetPieces()[ i ][ j ] != "E" )
+				outfile << "(" << i << "," << j << "): " << mTableau.GetPieces()[ i ][ j ] << std::endl;
+	outfile.close();
+}
+
 
 };

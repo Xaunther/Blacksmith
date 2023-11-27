@@ -21,6 +21,8 @@ public:
 
 	bool IsBetterResult( const history::size_type& aCountHits, const unsigned short& aScore ) const;
 
+	void SaveHistory( std::string_view aOutputFileName, const CTableau& aInitialTableau ) const;
+
 private:
 	history mHistory;
 	CTableau mTableau;

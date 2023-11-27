@@ -1,4 +1,3 @@
-#include "SaveHistory.h"
 #include "CResult.h"
 #include <iostream>
 #include <thread>
@@ -33,7 +32,7 @@ int main()
 
 	for( auto& resultThread : resultThreads )
 		resultThread.join();
-	SaveHistory( bestResult.GetHistory(), bestResult.GetTableau(), initialBoard );
+	bestResult.SaveHistory( "Best-pattern.txt", initialBoard );
 	return 0;
 }
 
