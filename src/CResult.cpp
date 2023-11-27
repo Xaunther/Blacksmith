@@ -22,18 +22,18 @@ void CResult::FindBest( const CTableau& aInitialBoard, const history::value_type
 	const auto& targetPieces = aSpeed ? aInitialBoard.CountPieces() : MAXPOS + 1;
 	for( ; mCounter < aNTries && mHistory.size() < targetPieces; mCounter++ ) // Iterate many times
 	{
-		history poshistory = { aInitialPosition };
+		history posHistory = { aInitialPosition };
 		CTableau board{ aInitialBoard };
 		// Randomize position if requested
-		if( poshistory.back().first == ROW || poshistory.back().second == COL )
-			poshistory.back() = aInitialBoard.Randomize( poshistory.back() );
-		while( poshistory.back().first > -1 ) // When no moves available, it is -1
-			poshistory.emplace_back( board.Move( poshistory.back(), aRNG ) );
-		poshistory.pop_back();
+		if( posHistory.back().first == ROW || posHistory.back().second == COL )
+			posHistory.back() = aInitialBoard.Randomize( posHistory.back() );
+		while( posHistory.back().first > -1 ) // When no moves available, it is -1
+			posHistory.emplace_back( board.Move( posHistory.back(), aRNG ) );
+		posHistory.pop_back();
 		std::lock_guard lock( mMutex );
-		if( IsBetterResult( poshistory.size(), board.GetScore() ) ) // New record!
+		if( IsBetterResult( posHistory.size(), board.GetScore() ) ) // New record!
 		{
-			mHistory = std::move( poshistory );
+			mHistory = std::move( posHistory );
 			mTableau = std::move( board );
 		}
 	}
