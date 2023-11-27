@@ -144,33 +144,33 @@ CTableau::destination CTableau::Move( const destination& aOrigin, std::mt19937_6
 		return { -1,-1 };
 	else if( mPieces[ aOrigin.first ][ aOrigin.second ] == "Q" )		  // Queen
 	{
-		destinations.reserve( movepos );
+		destinations.reserve( MOVEPOS );
 		MoveDiagonal( aOrigin, destinations );
 		MoveStraight( aOrigin, destinations );
 	}
 	else if( mPieces[ aOrigin.first ][ aOrigin.second ] == "B" ) // Bishop
 	{
-		destinations.reserve( movepos );
+		destinations.reserve( MOVEPOS );
 		MoveDiagonal( aOrigin, destinations );
 	}
 	else if( mPieces[ aOrigin.first ][ aOrigin.second ] == "R" ) // Rook
 	{
-		destinations.reserve( movepos );
+		destinations.reserve( MOVEPOS );
 		MoveStraight( aOrigin, destinations );
 	}
 	else if( mPieces[ aOrigin.first ][ aOrigin.second ] == "K" ) // Knight
 	{
-		destinations.reserve( movepos_K );
+		destinations.reserve( MOVEPOS_K );
 		MoveKnight( aOrigin, destinations );
 	}
 	else if( mPieces[ aOrigin.first ][ aOrigin.second ] == "W" ) // Rum (WILDCARD!)
 	{
-		destinations.reserve( maxpos );
+		destinations.reserve( MAXPOS );
 		MoveWildcard( aOrigin, destinations );
 	}
 	else
 	{
-		destinations.reserve( movepos_K );
+		destinations.reserve( MOVEPOS_K );
 		MoveDiagonal( aOrigin, destinations, std::stoi( mPieces[ aOrigin.first ][ aOrigin.second ] ) );
 		MoveStraight( aOrigin, destinations, std::stoi( mPieces[ aOrigin.first ][ aOrigin.second ] ) );
 	}
@@ -232,8 +232,8 @@ void CTableau::MoveKnight( const destination& aOrigin, destinations& aDestinatio
 
 void CTableau::MoveWildcard( const destination& aOrigin, destinations& aDestinations ) const
 {
-	for( int i = 0; i < row; i++ )
-		for( int j = 0; j < col; j++ )
+	for( int i = 0; i < ROW; i++ )
+		for( int j = 0; j < COL; j++ )
 			AppendDestination( aDestinations, aOrigin, { i, j } );
 	return;
 }
@@ -241,7 +241,7 @@ void CTableau::MoveWildcard( const destination& aOrigin, destinations& aDestinat
 CTableau::destination CTableau::Randomize( const destination& aOrigin ) const
 {
 	destinations dests; // Save all possible aDestinations
-	dests.reserve( maxpos );
+	dests.reserve( MAXPOS );
 	MoveWildcard( aOrigin, dests );
 	if( dests.size() > 0 ) // If it's possible
 		return dests[ rand() % dests.size() ];
@@ -272,7 +272,7 @@ void CTableau::SetPiece( const destination& aOrigin, const std::string& aPiece )
 
 bool CTableau::IsInside( const destination& aDestination ) const
 {
-	return aDestination.first >= 0 && aDestination.first < row && aDestination.second >= 0 && aDestination.second < col;
+	return aDestination.first >= 0 && aDestination.first < ROW && aDestination.second >= 0 && aDestination.second < COL;
 }
 
 unsigned int CTableau::CountPieces() const

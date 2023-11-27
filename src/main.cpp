@@ -27,9 +27,9 @@ int main()
 
 	CResult bestResult;
 	threads resultThreads;
-	resultThreads.reserve( N_threads );
-	for( unsigned short threadIndex = 0; threadIndex < N_threads; ++threadIndex )
-		resultThreads.emplace_back( &CResult::FindBest, &bestResult, initialBoard, initialPosition, maxsteps, std::ref( RNG ), speedOverScore );
+	resultThreads.reserve( N_THREADS );
+	for( unsigned short threadIndex = 0; threadIndex < N_THREADS; ++threadIndex )
+		resultThreads.emplace_back( &CResult::FindBest, &bestResult, initialBoard, initialPosition, MAXSTEPS, std::ref( RNG ), speedOverScore );
 
 	for( auto& resultThread : resultThreads )
 		resultThread.join();
@@ -44,9 +44,9 @@ CTableau::destination InputOrigin()
 {
 	CTableau::destination result;
 	// Ask for initial position
-	std::cout << "Initial row? (Number 0-" << row - 1 << ") (" << row << " for random): ";
+	std::cout << "Initial row? (Number 0-" << ROW - 1 << ") (" << ROW << " for random): ";
 	std::cin >> result.first;
-	std::cout << "Initial column? (Number 0-" << col - 1 << ") (" << col << " for random): ";
+	std::cout << "Initial column? (Number 0-" << COL - 1 << ") (" << COL << " for random): ";
 	std::cin >> result.second;
 	return result;
 }

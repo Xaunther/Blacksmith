@@ -62,7 +62,7 @@ class CTableau
 public:
 	using destination = std::pair<int, int>;
 	using destinations = std::vector<destination>;
-	using piece_matrix = std::array<std::array<std::string, col>, row>;
+	using piece_matrix = std::array<std::array<std::string, COL>, ROW>;
 
 	CTableau();
 

@@ -3,12 +3,12 @@
 namespace blacksmith
 {
 
-static const unsigned short row = 6;
-static const unsigned short col = 6;
-static const unsigned short maxpos = row * col;
-static const unsigned short movepos = 4;
-static const unsigned short movepos_K = movepos * 2;
-static const unsigned long maxsteps = 10000000;
-static const unsigned short N_threads = 8;
+static const unsigned short ROW = 6;
+static const unsigned short COL = 6;
+static const unsigned short MAXPOS = ROW * COL;
+static const unsigned short MOVEPOS = 4;
+static const unsigned short MOVEPOS_K = MOVEPOS * 2;
+static const unsigned long MAXSTEPS = 10000000;
+static const unsigned short N_THREADS = 8;
 
 }
