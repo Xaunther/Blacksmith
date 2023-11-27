@@ -274,10 +274,10 @@ void tableau::SetPiece( const destination& aOrigin, const std::string& aPiece )
 
 bool tableau::IsInside( const destination& aDestination ) const
 {
-	return aDestination.first >= 0 && aDestination.first < row&& aDestination.second >= 0 && aDestination.second < col;
+	return aDestination.first >= 0 && aDestination.first < row && aDestination.second >= 0 && aDestination.second < col;
 }
 
-int tableau::CountPieces() const
+unsigned int tableau::CountPieces() const
 {
 	// Loop around and count non-empty slots
 	int count = 0;

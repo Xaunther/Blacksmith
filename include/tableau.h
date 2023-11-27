@@ -93,7 +93,7 @@ public:
 
 	bool IsInside( const destination& aDestination ) const;
 
-	int CountPieces() const;
+	unsigned int CountPieces() const;
 
 private:
 	void AppendDestination( destinations& aDestinations, const destination& aOrigin, const destination& aDestination ) const;
