@@ -1,6 +1,4 @@
-// Header file for tableau class
-#ifndef tableau_h
-#define tableau_h
+#pragma once
 
 #include "Constants.h"
 #include <array>
@@ -12,7 +10,7 @@
 namespace blacksmith
 {
 
-class tableau
+class CTableau
 {
 	class CComboState
 	{
@@ -64,11 +62,11 @@ class tableau
 public:
 	using destination = std::pair<int, int>;
 	using destinations = std::vector<destination>;
-	using piece_matrix = std::array<std::array<std::string, col>, row>;
+	using piece_matrix = std::array<std::array<std::string, COL>, ROW>;
 
-	tableau();
+	CTableau();
 
-	tableau( const std::string& aFileName );
+	CTableau( const std::string& aFileName );
 
 	void Load( const std::string& aFileName );
 
@@ -109,5 +107,3 @@ private:
 };
 
 };
-
-#endif

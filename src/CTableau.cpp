@@ -1,6 +1,4 @@
-// Implementation of tableau
-
-#include "tableau.h"
+#include "CTableau.h"
 #include <fstream>
 #include <string>
 #include <set>
@@ -15,17 +13,17 @@ static const std::set<std::string> PIECES = { "Q","B","R","K","W","E","1","2","3
 static const std::set<std::string> CHESS_PIECES = { "Q","B","R","K" };
 static const std::set<std::string> NUMBER_PIECES = { "1","2","3","4" };
 
-const tableau::piece_matrix& Check( const tableau::piece_matrix& aPieces );
+const CTableau::piece_matrix& Check( const CTableau::piece_matrix& aPieces );
 
 }
 
-tableau::CComboState::CSetState::CSetState() :
+CTableau::CComboState::CSetState::CSetState() :
 	mCount( 0 )
 {
 	mPieceSequence.reserve( CHESS_PIECES.size() );
 }
 
-unsigned short tableau::CComboState::CSetState::Update( const std::string& aPiece )
+unsigned short CTableau::CComboState::CSetState::Update( const std::string& aPiece )
 {
 	// If it is a wildcard, just keep it going!
 	if( aPiece == "W" )
@@ -65,18 +63,18 @@ unsigned short tableau::CComboState::CSetState::Update( const std::string& aPiec
 		return 1;
 }
 
-void tableau::CComboState::CSetState::Reset()
+void CTableau::CComboState::CSetState::Reset()
 {
 	*this = CSetState();
 }
 
-tableau::CComboState::CMultiState::CMultiState() :
+CTableau::CComboState::CMultiState::CMultiState() :
 	mPiece( "E" ),
 	mCount( 0 )
 {
 }
 
-unsigned short tableau::CComboState::CMultiState::Update( const std::string& aPiece )
+unsigned short CTableau::CComboState::CMultiState::Update( const std::string& aPiece )
 {
 	if( mPiece == aPiece )
 		++mCount;
@@ -88,12 +86,12 @@ unsigned short tableau::CComboState::CMultiState::Update( const std::string& aPi
 	return mCount;
 }
 
-void tableau::CComboState::CMultiState::Reset()
+void CTableau::CComboState::CMultiState::Reset()
 {
 	*this = CMultiState();
 }
 
-unsigned short tableau::CComboState::Update( const std::string& aPiece )
+unsigned short CTableau::CComboState::Update( const std::string& aPiece )
 {
 	const auto& setScore = mSetState.Update( aPiece );
 	if( setScore > 1 )
@@ -111,7 +109,7 @@ unsigned short tableau::CComboState::Update( const std::string& aPiece )
 }
 
 // Initializer
-tableau::tableau() :
+CTableau::CTableau() :
 	mScore( 0 )
 {
 	for( auto& _row : mPieces )
@@ -119,7 +117,7 @@ tableau::tableau() :
 			piece = "E";
 }
 
-tableau::tableau( const std::string& aFileName ) :
+CTableau::CTableau( const std::string& aFileName ) :
 	mScore( 0 )
 {
 	Load( aFileName );
@@ -127,7 +125,7 @@ tableau::tableau( const std::string& aFileName ) :
 }
 
 // Load "map" from file, file must follow the codes
-void tableau::Load( const std::string& aFileName )
+void CTableau::Load( const std::string& aFileName )
 {
 	std::ifstream infile;
 	std::string basura;
@@ -139,40 +137,40 @@ void tableau::Load( const std::string& aFileName )
 }
 
 // Move from current place to another suitable one, randomly. Return next point
-tableau::destination tableau::Move( const destination& aOrigin, std::mt19937_64& aRNG )
+CTableau::destination CTableau::Move( const destination& aOrigin, std::mt19937_64& aRNG )
 {
 	destinations destinations; // Save all possible aDestinations
 	if( mPieces[ aOrigin.first ][ aOrigin.second ] == "E" )		  // Empty
 		return { -1,-1 };
 	else if( mPieces[ aOrigin.first ][ aOrigin.second ] == "Q" )		  // Queen
 	{
-		destinations.reserve( movepos );
+		destinations.reserve( MOVEPOS );
 		MoveDiagonal( aOrigin, destinations );
 		MoveStraight( aOrigin, destinations );
 	}
 	else if( mPieces[ aOrigin.first ][ aOrigin.second ] == "B" ) // Bishop
 	{
-		destinations.reserve( movepos );
+		destinations.reserve( MOVEPOS );
 		MoveDiagonal( aOrigin, destinations );
 	}
 	else if( mPieces[ aOrigin.first ][ aOrigin.second ] == "R" ) // Rook
 	{
-		destinations.reserve( movepos );
+		destinations.reserve( MOVEPOS );
 		MoveStraight( aOrigin, destinations );
 	}
 	else if( mPieces[ aOrigin.first ][ aOrigin.second ] == "K" ) // Knight
 	{
-		destinations.reserve( movepos_K );
+		destinations.reserve( MOVEPOS_K );
 		MoveKnight( aOrigin, destinations );
 	}
 	else if( mPieces[ aOrigin.first ][ aOrigin.second ] == "W" ) // Rum (WILDCARD!)
 	{
-		destinations.reserve( maxpos );
+		destinations.reserve( MAXPOS );
 		MoveWildcard( aOrigin, destinations );
 	}
 	else
 	{
-		destinations.reserve( movepos_K );
+		destinations.reserve( MOVEPOS_K );
 		MoveDiagonal( aOrigin, destinations, std::stoi( mPieces[ aOrigin.first ][ aOrigin.second ] ) );
 		MoveStraight( aOrigin, destinations, std::stoi( mPieces[ aOrigin.first ][ aOrigin.second ] ) );
 	}
@@ -184,7 +182,7 @@ tableau::destination tableau::Move( const destination& aOrigin, std::mt19937_64&
 		return { -1,-1 };
 }
 
-void tableau::MoveDiagonal( const destination& aOrigin, destinations& aDestinations ) const
+void CTableau::MoveDiagonal( const destination& aOrigin, destinations& aDestinations ) const
 {
 	AppendDestination( aDestinations, aOrigin, { aOrigin.first - std::min( aOrigin.first - 0, aOrigin.second - 0 ),
 		aOrigin.second - std::min( aOrigin.first - 0, aOrigin.second - 0 ) } );
@@ -196,7 +194,7 @@ void tableau::MoveDiagonal( const destination& aOrigin, destinations& aDestinati
 		aOrigin.second + std::min( aOrigin.first - 0, 5 - aOrigin.second ) } );
 }
 
-void tableau::MoveDiagonal( const destination& aOrigin, destinations& aDestinations, int aSteps ) const
+void CTableau::MoveDiagonal( const destination& aOrigin, destinations& aDestinations, int aSteps ) const
 {
 	AppendDestination( aDestinations, aOrigin, { aOrigin.first - aSteps, aOrigin.second - aSteps } );
 	AppendDestination( aDestinations, aOrigin, { aOrigin.first + aSteps, aOrigin.second - aSteps } );
@@ -204,7 +202,7 @@ void tableau::MoveDiagonal( const destination& aOrigin, destinations& aDestinati
 	AppendDestination( aDestinations, aOrigin, { aOrigin.first - aSteps, aOrigin.second + aSteps } );
 }
 
-void tableau::MoveStraight( const destination& aOrigin, destinations& aDestinations ) const
+void CTableau::MoveStraight( const destination& aOrigin, destinations& aDestinations ) const
 {
 	AppendDestination( aDestinations, aOrigin, { 0, aOrigin.second } );
 	AppendDestination( aDestinations, aOrigin, { 5, aOrigin.second } );
@@ -212,7 +210,7 @@ void tableau::MoveStraight( const destination& aOrigin, destinations& aDestinati
 	AppendDestination( aDestinations, aOrigin, { aOrigin.first, 5 } );
 }
 
-void tableau::MoveStraight( const destination& aOrigin, destinations& aDestinations, int aSteps ) const
+void CTableau::MoveStraight( const destination& aOrigin, destinations& aDestinations, int aSteps ) const
 {
 	AppendDestination( aDestinations, aOrigin, { aOrigin.first + aSteps, aOrigin.second } );
 	AppendDestination( aDestinations, aOrigin, { aOrigin.first - aSteps, aOrigin.second } );
@@ -220,7 +218,7 @@ void tableau::MoveStraight( const destination& aOrigin, destinations& aDestinati
 	AppendDestination( aDestinations, aOrigin, { aOrigin.first, aOrigin.second - aSteps } );
 }
 
-void tableau::MoveKnight( const destination& aOrigin, destinations& aDestinations ) const
+void CTableau::MoveKnight( const destination& aOrigin, destinations& aDestinations ) const
 {
 	AppendDestination( aDestinations, aOrigin, { aOrigin.first - 1, aOrigin.second - 2 } );
 	AppendDestination( aDestinations, aOrigin, { aOrigin.first - 1, aOrigin.second + 2 } );
@@ -232,18 +230,18 @@ void tableau::MoveKnight( const destination& aOrigin, destinations& aDestination
 	AppendDestination( aDestinations, aOrigin, { aOrigin.first + 2, aOrigin.second + 1 } );
 }
 
-void tableau::MoveWildcard( const destination& aOrigin, destinations& aDestinations ) const
+void CTableau::MoveWildcard( const destination& aOrigin, destinations& aDestinations ) const
 {
-	for( int i = 0; i < row; i++ )
-		for( int j = 0; j < col; j++ )
+	for( int i = 0; i < ROW; i++ )
+		for( int j = 0; j < COL; j++ )
 			AppendDestination( aDestinations, aOrigin, { i, j } );
 	return;
 }
 
-tableau::destination tableau::Randomize( const destination& aOrigin ) const
+CTableau::destination CTableau::Randomize( const destination& aOrigin ) const
 {
 	destinations dests; // Save all possible aDestinations
-	dests.reserve( maxpos );
+	dests.reserve( MAXPOS );
 	MoveWildcard( aOrigin, dests );
 	if( dests.size() > 0 ) // If it's possible
 		return dests[ rand() % dests.size() ];
@@ -251,33 +249,33 @@ tableau::destination tableau::Randomize( const destination& aOrigin ) const
 		return { -1,-1 };
 }
 
-const tableau::piece_matrix& tableau::GetPieces() const
+const CTableau::piece_matrix& CTableau::GetPieces() const
 {
 	return mPieces;
 }
 
-const std::string& tableau::GetPiece( const destination& aDestination ) const
+const std::string& CTableau::GetPiece( const destination& aDestination ) const
 {
 	return mPieces.at( aDestination.first ).at( aDestination.second );
 }
 
-const unsigned short& tableau::GetScore() const
+const unsigned short& CTableau::GetScore() const
 {
 	return mScore;
 }
 
-void tableau::SetPiece( const destination& aOrigin, const std::string& aPiece )
+void CTableau::SetPiece( const destination& aOrigin, const std::string& aPiece )
 {
 	if( IsInside( aOrigin ) )
 		mPieces[ aOrigin.first ][ aOrigin.second ] = aPiece;
 }
 
-bool tableau::IsInside( const destination& aDestination ) const
+bool CTableau::IsInside( const destination& aDestination ) const
 {
-	return aDestination.first >= 0 && aDestination.first < row && aDestination.second >= 0 && aDestination.second < col;
+	return aDestination.first >= 0 && aDestination.first < ROW && aDestination.second >= 0 && aDestination.second < COL;
 }
 
-unsigned int tableau::CountPieces() const
+unsigned int CTableau::CountPieces() const
 {
 	// Loop around and count non-empty slots
 	int count = 0;
@@ -288,7 +286,7 @@ unsigned int tableau::CountPieces() const
 	return count;
 }
 
-void tableau::AppendDestination( destinations& aDestinations, const destination& aOrigin, const destination& aDestination ) const
+void CTableau::AppendDestination( destinations& aDestinations, const destination& aOrigin, const destination& aDestination ) const
 {
 	if( aOrigin != aDestination && IsInside( aDestination ) && mPieces[ aDestination.first ][ aDestination.second ] != "E" )
 		aDestinations.push_back( aDestination );
@@ -297,7 +295,7 @@ void tableau::AppendDestination( destinations& aDestinations, const destination&
 namespace
 {
 
-const tableau::piece_matrix& Check( const tableau::piece_matrix& aPieces )
+const CTableau::piece_matrix& Check( const CTableau::piece_matrix& aPieces )
 {
 	for( const auto& _row : aPieces )
 		for( const auto& piece : _row )

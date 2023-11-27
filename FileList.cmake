@@ -1,8 +1,8 @@
 # Core source files
 SET(BLACKSMITH_CORE_SOURCE
-	src/result.cpp
+	src/CResult.cpp
 	src/SaveHistory.cpp
-	src/tableau.cpp
+	src/CTableau.cpp
 )
 
 # Core internal headers
@@ -11,9 +11,9 @@ SET(BLACKSMITH_CORE_INTERNAL_HEADERS)
 # Core external headers
 SET(BLACKSMITH_CORE_EXTERNAL_HEADERS
 	include/Constants.h
-	include/result.h
+	include/CResult.h
 	include/SaveHistory.h
-	include/tableau.h
+	include/CTableau.h
 )
 
 # Source files

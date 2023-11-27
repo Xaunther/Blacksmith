@@ -1,16 +1,12 @@
-// Function to save the best combination
-#ifndef SaveHistory_h
-#define SaveHistory_h
+#pragma once
 
-#include "tableau.h"
+#include "CTableau.h"
 #include <list>
 
 namespace blacksmith
 {
 
-using history = std::list<tableau::destination>;
-void SaveHistory( const history& aHistory, const tableau& aTableau, const tableau& aInitialTableau );
+using history = std::list<CTableau::destination>;
+void SaveHistory( const history& aHistory, const CTableau& aTableau, const CTableau& aInitialTableau );
 
 };
-
-#endif

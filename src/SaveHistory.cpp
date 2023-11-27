@@ -1,4 +1,3 @@
-// Implementation of the function
 #include "SaveHistory.h"
 #include <fstream>
 #include <iomanip>
@@ -8,7 +7,7 @@
 namespace blacksmith
 {
 
-void SaveHistory( const history& aHistory, const tableau& aTableau, const tableau& aInitialTableau )
+void SaveHistory( const history& aHistory, const CTableau& aTableau, const CTableau& aInitialTableau )
 {
 	std::ofstream outfile;
 	std::string outname = "Best-pattern.txt";
@@ -23,8 +22,8 @@ void SaveHistory( const history& aHistory, const tableau& aTableau, const tablea
 	outfile << "----------------------" << std::endl;
 	outfile << "   Remaining Pieces   " << std::endl;
 	outfile << "----------------------" << std::endl;
-	for( int i = 0; i < row; i++ )
-		for( int j = 0; j < col; j++ )
+	for( int i = 0; i < ROW; i++ )
+		for( int j = 0; j < COL; j++ )
 			if( aTableau.GetPieces()[ i ][ j ] != "E" )
 				outfile << "(" << i << "," << j << "): " << aTableau.GetPieces()[ i ][ j ] << std::endl;
 	outfile.close();
