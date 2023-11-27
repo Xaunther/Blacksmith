@@ -1,6 +1,4 @@
-// Declare constants here
-#ifndef Constants_h
-#define Constants_h
+#pragma once
 
 namespace blacksmith
 {
@@ -14,5 +12,3 @@ static const unsigned long maxsteps = 10000000;
 static const unsigned short N_threads = 8;
 
 }
-
-#endif

@@ -1,4 +1,3 @@
-// Implementation of the function
 #include "SaveHistory.h"
 #include <fstream>
 #include <iomanip>
@@ -8,7 +7,7 @@
 namespace blacksmith
 {
 
-void SaveHistory( const history& aHistory, const tableau& aTableau, const tableau& aInitialTableau )
+void SaveHistory( const history& aHistory, const CTableau& aTableau, const CTableau& aInitialTableau )
 {
 	std::ofstream outfile;
 	std::string outname = "Best-pattern.txt";

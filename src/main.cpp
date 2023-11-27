@@ -1,7 +1,5 @@
-// Main function
-
 #include "SaveHistory.h"
-#include "result.h"
+#include "CResult.h"
 #include <iostream>
 #include <thread>
 
@@ -12,7 +10,7 @@ using threads = std::vector<std::thread>;
 namespace
 {
 
-tableau::destination InputOrigin();
+CTableau::destination InputOrigin();
 bool InputSpeedOverScore();
 
 }
@@ -25,13 +23,13 @@ int main()
 
 	const auto& initialPosition = InputOrigin();
 	const auto& speedOverScore = InputSpeedOverScore();
-	const tableau initialBoard( "board.dat" );
+	const CTableau initialBoard( "board.dat" );
 
-	result bestResult;
+	CResult bestResult;
 	threads resultThreads;
 	resultThreads.reserve( N_threads );
 	for( unsigned short threadIndex = 0; threadIndex < N_threads; ++threadIndex )
-		resultThreads.emplace_back( &result::FindBest, &bestResult, initialBoard, initialPosition, maxsteps, std::ref( RNG ), speedOverScore );
+		resultThreads.emplace_back( &CResult::FindBest, &bestResult, initialBoard, initialPosition, maxsteps, std::ref( RNG ), speedOverScore );
 
 	for( auto& resultThread : resultThreads )
 		resultThread.join();
@@ -42,9 +40,9 @@ int main()
 namespace
 {
 
-tableau::destination InputOrigin()
+CTableau::destination InputOrigin()
 {
-	tableau::destination result;
+	CTableau::destination result;
 	// Ask for initial position
 	std::cout << "Initial row? (Number 0-" << row - 1 << ") (" << row << " for random): ";
 	std::cin >> result.first;
