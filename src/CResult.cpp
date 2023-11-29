@@ -11,9 +11,9 @@ const CResult::history& CResult::GetHistory() const
 	return mHistory;
 }
 
-const CTableau& CResult::GetTableau() const
+const CTableauState& CResult::GetTableauState() const
 {
-	return mTableau;
+	return mTableauState;
 }
 const std::atomic_ulong& CResult::GetCounter() const
 {
@@ -26,25 +26,25 @@ void CResult::FindBest( const CTableau& aInitialBoard, const history::value_type
 	for( ; mCounter < aNTries && mHistory.size() < targetPieces; mCounter++ ) // Iterate many times
 	{
 		history posHistory = { aInitialPosition };
-		CTableau board{ aInitialBoard };
+		CTableauState tableauState{ aInitialBoard };
 		// Randomize position if requested
 		if( posHistory.back().first == ROW || posHistory.back().second == COL )
-			posHistory.back() = aInitialBoard.Randomize( posHistory.back() );
+			posHistory.back() = tableauState.Randomize( posHistory.back() );
 		while( posHistory.back().first > -1 ) // When no moves available, it is -1
-			posHistory.emplace_back( board.Move( posHistory.back(), aRNG ) );
+			posHistory.emplace_back( tableauState.Move( posHistory.back(), aRNG ) );
 		posHistory.pop_back();
 		std::lock_guard lock( mMutex );
-		if( IsBetterResult( posHistory.size(), board.GetScore() ) ) // New record!
+		if( IsBetterResult( posHistory.size(), tableauState.GetScore() ) ) // New record!
 		{
 			mHistory = std::move( posHistory );
-			mTableau = std::move( board );
+			mTableauState = std::move( tableauState );
 		}
 	}
 }
 
 bool CResult::IsBetterResult( const history::size_type& aCountHits, const unsigned short& aScore ) const
 {
-	return ( aCountHits > mHistory.size() ) || ( aCountHits == mHistory.size() && aScore > mTableau.GetScore() );
+	return ( aCountHits > mHistory.size() ) || ( aCountHits == mHistory.size() && aScore > mTableauState.GetScore() );
 }
 
 void CResult::SaveHistory( std::string_view aOutputFileName, const CTableau& aInitialTableau ) const
@@ -63,8 +63,8 @@ void CResult::SaveHistory( std::string_view aOutputFileName, const CTableau& aIn
 	outfile << "----------------------" << std::endl;
 	for( int i = 0; i < ROW; i++ )
 		for( int j = 0; j < COL; j++ )
-			if( mTableau.GetPieces()[ i ][ j ] != "E" )
-				outfile << "(" << i << "," << j << "): " << mTableau.GetPieces()[ i ][ j ] << std::endl;
+			if( mTableauState.GetTableau().GetPieces()[ i ][ j ] != "E" )
+				outfile << "(" << i << "," << j << "): " << mTableauState.GetTableau().GetPieces()[ i ][ j ] << std::endl;
 	outfile.close();
 }
 

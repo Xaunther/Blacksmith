@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CTableau.h"
+#include "CTableauState.h"
 #include <list>
 #include <mutex>
 #include <atomic>
@@ -14,7 +14,7 @@ public:
 	using history = std::list<CTableau::destination>;
 
 	const history& GetHistory() const;
-	const CTableau& GetTableau() const;
+	const CTableauState& GetTableauState() const;
 	const std::atomic_ulong& GetCounter() const;
 
 	void FindBest( const CTableau& aInitialBoard, const history::value_type& aInitialPosition, const unsigned int& aNTries, std::mt19937_64& aRNG, const bool aSpeed );
@@ -25,7 +25,7 @@ public:
 
 private:
 	history mHistory;
-	CTableau mTableau;
+	CTableauState mTableauState;
 	std::mutex mMutex;
 	std::atomic_ulong mCounter;
 };
