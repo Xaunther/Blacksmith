@@ -23,8 +23,6 @@ public:
 
 	CTableau( const std::string& aFileName );
 
-	void Load( const std::string& aFileName );
-
 	const piece_matrix& GetPieces() const;
 	piece_matrix& Pieces();
 

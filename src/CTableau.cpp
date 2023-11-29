@@ -11,7 +11,8 @@ namespace blacksmith
 namespace
 {
 
-const CTableau::piece_matrix& Check( const CTableau::piece_matrix& aPieces );
+CTableau::piece_matrix LoadPieces( const std::string_view aFileName );
+const CTableau::piece_matrix& CheckPieces( const CTableau::piece_matrix& aPieces );
 
 }
 
@@ -39,21 +40,9 @@ CTableau::CTableau()
 			piece = "E";
 }
 
-CTableau::CTableau( const std::string& aFileName )
+CTableau::CTableau( const std::string& aFileName ) :
+	mPieces( CheckPieces( LoadPieces( aFileName ) ) )
 {
-	Load( aFileName );
-	Check( mPieces );
-}
-
-void CTableau::Load( const std::string& aFileName )
-{
-	std::ifstream infile;
-	std::string basura;
-	infile.open( aFileName.c_str() );
-	for( auto& _row : mPieces )
-		for( auto& piece : _row )
-			infile >> piece;
-	infile.close();
 }
 
 const CTableau::piece_matrix& CTableau::GetPieces() const
@@ -96,7 +85,22 @@ unsigned int CTableau::CountPieces() const
 namespace
 {
 
-const CTableau::piece_matrix& Check( const CTableau::piece_matrix& aPieces )
+CTableau::piece_matrix LoadPieces( const std::string_view aFileName )
+{
+	CTableau::piece_matrix result;
+
+	std::ifstream infile;
+	std::string basura;
+	infile.open( aFileName.data() );
+	for( auto& _row : result )
+		for( auto& piece : _row )
+			infile >> piece;
+	infile.close();
+
+	return result;
+}
+
+const CTableau::piece_matrix& CheckPieces( const CTableau::piece_matrix& aPieces )
 {
 	for( const auto& _row : aPieces )
 		for( const auto& piece : _row )
