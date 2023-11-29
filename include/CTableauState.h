@@ -47,28 +47,31 @@ public:
 	using destination = CTableau::destination;
 	using destinations = std::vector<destination>;
 
-	explicit CTableauState( const CTableau& aTableau );
+	explicit CTableauState( const CTableau& aTableau, const destination& aCurrentPosition );
 
 	const CTableau& GetTableau() const;
+	const destination& GetCurrentPosition() const;
 	const unsigned short& GetScore() const;
 
 	// Updates set and multi states with the piece hit. Returrns score for hitting such piece
 	unsigned short Update( const std::string& aPiece );
 
-	destination Randomize( const destination& aDestination ) const;
+	destination Randomize();
 
-	destination Move( const destination& aDestination, std::mt19937_64& aRNG );
-	void MoveDiagonal( const destination& aOrigin, destinations& aDestinations ) const;
-	void MoveDiagonal( const destination& aOrigin, destinations& aDestinations, int aSteps ) const;
-	void MoveStraight( const destination& aOrigin, destinations& aDestinations ) const;
-	void MoveStraight( const destination& aOrigin, destinations& aDestinations, int aSteps ) const;
-	void MoveKnight( const destination& aOrigin, destinations& aDestinations ) const;
-	void MoveWildcard( const destination& aOrigin, destinations& aDestinations ) const;
+	destination Move( std::mt19937_64& aRNG );
 
 private:
-	void AppendDestination( destinations& aDestinations, const destination& aOrigin, const destination& aDestination ) const;
+	void MoveDiagonal( destinations& aDestinations ) const;
+	void MoveDiagonal( destinations& aDestinations, int aSteps ) const;
+	void MoveStraight( destinations& aDestinations ) const;
+	void MoveStraight( destinations& aDestinations, int aSteps ) const;
+	void MoveKnight( destinations& aDestinations ) const;
+	void MoveWildcard( destinations& aDestinations ) const;
+
+	void AppendDestination( destinations& aDestinations, const destination& aDestination ) const;
 
 	CTableau mTableau;
+	destination mCurrentPosition;
 	CSetState mSetState;
 	CMultiState mMultiState;
 

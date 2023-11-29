@@ -13,13 +13,13 @@ class CResult
 public:
 	using history = std::list<CTableau::destination>;
 
-	explicit CResult( const CTableau& aInitialTableau );
+	explicit CResult( const CTableauState& aInitialTableauState );
 
 	const history& GetHistory() const;
 	const CTableauState& GetTableauState() const;
 	const std::atomic_ulong& GetCounter() const;
 
-	void FindBest( const history::value_type& aInitialPosition, const unsigned int& aNTries, std::mt19937_64& aRNG, const bool aSpeed );
+	void FindBest( const unsigned int& aNTries, std::mt19937_64& aRNG, const bool aSpeed );
 
 	bool IsBetterResult( const history::size_type& aCountHits, const unsigned short& aScore ) const;
 

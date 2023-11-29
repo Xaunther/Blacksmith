@@ -24,11 +24,11 @@ int main()
 	const auto& speedOverScore = InputSpeedOverScore();
 	const CTableau initialBoard( "board.dat" );
 
-	CResult bestResult{ initialBoard };
+	CResult bestResult{ CTableauState{ initialBoard, initialPosition } };
 	threads resultThreads;
 	resultThreads.reserve( N_THREADS );
 	for( unsigned short threadIndex = 0; threadIndex < N_THREADS; ++threadIndex )
-		resultThreads.emplace_back( &CResult::FindBest, &bestResult, initialPosition, MAXSTEPS, std::ref( RNG ), speedOverScore );
+		resultThreads.emplace_back( &CResult::FindBest, &bestResult, MAXSTEPS, std::ref( RNG ), speedOverScore );
 
 	for( auto& resultThread : resultThreads )
 		resultThread.join();
