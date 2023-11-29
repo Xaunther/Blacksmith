@@ -1,4 +1,3 @@
-#include "SaveHistory.h"
 #include "CResult.h"
 #include <iostream>
 #include <thread>
@@ -25,15 +24,15 @@ int main()
 	const auto& speedOverScore = InputSpeedOverScore();
 	const CTableau initialBoard( "board.dat" );
 
-	CResult bestResult;
+	CResult bestResult{ CTableauState{ initialBoard, initialPosition } };
 	threads resultThreads;
 	resultThreads.reserve( N_THREADS );
 	for( unsigned short threadIndex = 0; threadIndex < N_THREADS; ++threadIndex )
-		resultThreads.emplace_back( &CResult::FindBest, &bestResult, initialBoard, initialPosition, MAXSTEPS, std::ref( RNG ), speedOverScore );
+		resultThreads.emplace_back( &CResult::FindBest, &bestResult, MAXSTEPS, std::ref( RNG ), speedOverScore );
 
 	for( auto& resultThread : resultThreads )
 		resultThread.join();
-	SaveHistory( bestResult.GetHistory(), bestResult.GetTableau(), initialBoard );
+	bestResult.SaveHistory( "Best-pattern.txt", initialBoard );
 	return 0;
 }
 
