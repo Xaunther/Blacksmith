@@ -6,6 +6,11 @@
 namespace blacksmith
 {
 
+CResult::CResult( const CTableau& aInitialTableau ) :
+	mTableauState( aInitialTableau )
+{
+}
+
 const CResult::history& CResult::GetHistory() const
 {
 	return mHistory;
@@ -20,13 +25,14 @@ const std::atomic_ulong& CResult::GetCounter() const
 	return mCounter;
 }
 
-void CResult::FindBest( const CTableau& aInitialBoard, const history::value_type& aInitialPosition, const unsigned int& aNTries, std::mt19937_64& aRNG, const bool aSpeed )
+void CResult::FindBest( const history::value_type& aInitialPosition, const unsigned int& aNTries, std::mt19937_64& aRNG, const bool aSpeed )
 {
-	const auto& targetPieces = aSpeed ? aInitialBoard.CountPieces() : MAXPOS + 1;
+	const auto initialTableauState = mTableauState;
+	const auto& targetPieces = aSpeed ? initialTableauState.GetTableau().CountPieces() : MAXPOS + 1;
 	for( ; mCounter < aNTries && mHistory.size() < targetPieces; mCounter++ ) // Iterate many times
 	{
 		history posHistory = { aInitialPosition };
-		CTableauState tableauState{ aInitialBoard };
+		auto tableauState = initialTableauState;
 		// Randomize position if requested
 		if( posHistory.back().first == ROW || posHistory.back().second == COL )
 			posHistory.back() = tableauState.Randomize( posHistory.back() );

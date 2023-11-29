@@ -47,7 +47,6 @@ public:
 	using destination = CTableau::destination;
 	using destinations = std::vector<destination>;
 
-	explicit CTableauState() = default;
 	explicit CTableauState( const CTableau& aTableau );
 
 	const CTableau& GetTableau() const;

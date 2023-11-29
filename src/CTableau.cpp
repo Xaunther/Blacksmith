@@ -33,13 +33,6 @@ const std::set<std::string>& CTableau::PIECES()
 	return result;
 }
 
-CTableau::CTableau()
-{
-	for( auto& _row : mPieces )
-		for( auto& piece : _row )
-			piece = "E";
-}
-
 CTableau::CTableau( const std::string& aFileName ) :
 	mPieces( CheckPieces( LoadPieces( aFileName ) ) )
 {

@@ -19,8 +19,6 @@ public:
 	using destinations = std::vector<destination>;
 	using piece_matrix = std::array<std::array<std::string, COL>, ROW>;
 
-	CTableau();
-
 	CTableau( const std::string& aFileName );
 
 	const piece_matrix& GetPieces() const;
