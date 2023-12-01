@@ -9,7 +9,7 @@ using threads = std::vector<std::thread>;
 namespace
 {
 
-CTableauState::coordinates InputOrigin( const CTableau::index& aRows );
+std::optional<CTableauState::coordinates> InputOrigin( const CTableau::index& aRows );
 bool InputSpeedOverScore();
 
 }
@@ -39,7 +39,7 @@ int main()
 namespace
 {
 
-CTableauState::coordinates InputOrigin( const CTableau::index& aRows )
+std::optional<CTableauState::coordinates> InputOrigin( const CTableau::index& aRows )
 {
 	CTableauState::coordinates result;
 	// Ask for initial position
@@ -47,7 +47,7 @@ CTableauState::coordinates InputOrigin( const CTableau::index& aRows )
 	std::cin >> result.first;
 	std::cout << "Initial column? (Number 0-" << aRows - 1 << ") (" << aRows << " for random): ";
 	std::cin >> result.second;
-	return result;
+	return ( result.first < aRows && result.second < aRows ) ? result : std::optional<CTableauState::coordinates>{};
 }
 
 bool InputSpeedOverScore()

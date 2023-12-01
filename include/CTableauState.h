@@ -47,10 +47,10 @@ public:
 	using coordinates = std::pair<CTableau::index, CTableau::index>;
 	using coordinates_vector = std::vector<coordinates>;
 
-	explicit CTableauState( const CTableau& aTableau, const coordinates& aCurrentPosition );
+	explicit CTableauState( const CTableau& aTableau, const std::optional<coordinates>& aCurrentPosition );
 
 	const CTableau& GetTableau() const;
-	const coordinates& GetCurrentPosition() const;
+	const std::optional<coordinates>& GetCurrentPosition() const;
 	const unsigned short& GetScore() const;
 
 	// Updates set and multi states with the piece hit. Returrns score for hitting such piece
@@ -58,7 +58,7 @@ public:
 
 	coordinates Randomize();
 
-	coordinates Move( std::mt19937_64& aRNG );
+	std::optional<coordinates> Move( std::mt19937_64& aRNG );
 
 private:
 	void MoveDiagonal( coordinates_vector& aDestinations ) const;
@@ -71,7 +71,7 @@ private:
 	void AppendDestination( coordinates_vector& aDestinations, const coordinates& aDestination ) const;
 
 	CTableau mTableau;
-	coordinates mCurrentPosition;
+	std::optional<coordinates> mCurrentPosition;
 	CSetState mSetState;
 	CMultiState mMultiState;
 

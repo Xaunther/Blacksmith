@@ -28,18 +28,13 @@ const std::atomic_ulong& CResult::GetCounter() const
 void CResult::FindBest( const unsigned int& aNTries, std::mt19937_64& aRNG, const bool aSpeed )
 {
 	const auto initialTableauState = mTableauState;
-	const auto& tableauRows = initialTableauState.GetTableau().GetRows();
 	const auto& targetPieces = initialTableauState.GetTableau().CountPieces() + ( aSpeed ? 0 : 1 );
 	for( ; mCounter < aNTries && mHistory.size() < targetPieces; mCounter++ ) // Iterate many times
 	{
-		history posHistory = { initialTableauState.GetCurrentPosition() };
 		auto tableauState = initialTableauState;
-		// Randomize position if requested
-		if( posHistory.back().first == tableauRows || posHistory.back().second == tableauRows )
-			posHistory.back() = tableauState.Randomize();
-		while( posHistory.back().first > -1 ) // When no moves available, it is -1
-			posHistory.emplace_back( tableauState.Move( aRNG ) );
-		posHistory.pop_back();
+		history posHistory{ initialTableauState.GetCurrentPosition().value_or( tableauState.Randomize() ) };
+		while( const auto& nextPosition = tableauState.Move( aRNG ) )
+			posHistory.emplace_back( *nextPosition );
 		std::lock_guard lock( mMutex );
 		if( IsBetterResult( posHistory.size(), tableauState.GetScore() ) ) // New record!
 		{
