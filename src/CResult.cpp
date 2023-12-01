@@ -28,13 +28,14 @@ const std::atomic_ulong& CResult::GetCounter() const
 void CResult::FindBest( const unsigned int& aNTries, std::mt19937_64& aRNG, const bool aSpeed )
 {
 	const auto initialTableauState = mTableauState;
-	const auto& targetPieces = aSpeed ? initialTableauState.GetTableau().CountPieces() : MAXPOS + 1;
+	const auto& tableauRows = initialTableauState.GetTableau().GetRows();
+	const auto& targetPieces = initialTableauState.GetTableau().CountPieces() + ( aSpeed ? 0 : 1 );
 	for( ; mCounter < aNTries && mHistory.size() < targetPieces; mCounter++ ) // Iterate many times
 	{
 		history posHistory = { initialTableauState.GetCurrentPosition() };
 		auto tableauState = initialTableauState;
 		// Randomize position if requested
-		if( posHistory.back().first == ROW || posHistory.back().second == COL )
+		if( posHistory.back().first == tableauRows || posHistory.back().second == tableauRows )
 			posHistory.back() = tableauState.Randomize();
 		while( posHistory.back().first > -1 ) // When no moves available, it is -1
 			posHistory.emplace_back( tableauState.Move( aRNG ) );
@@ -62,15 +63,15 @@ void CResult::SaveHistory( std::string_view aOutputFileName, const CTableau& aIn
 
 	unsigned int index = 0;
 	for( const auto& epoch : mHistory )
-		outfile << std::setw( 4 ) << index++ << "     (" << epoch.first << "," << epoch.second << ")     " << std::setw( 1 ) << aInitialTableau.GetPieces()[ epoch.first ][ epoch.second ] << std::endl;
+		outfile << std::setw( 4 ) << index++ << "     (" << epoch.first << "," << epoch.second << ")     " << std::setw( 1 ) << aInitialTableau.GetPiece( epoch.first, epoch.second ) << std::endl;
 	// Write also remaining pieces
 	outfile << "----------------------" << std::endl;
 	outfile << "   Remaining Pieces   " << std::endl;
 	outfile << "----------------------" << std::endl;
-	for( int i = 0; i < ROW; i++ )
-		for( int j = 0; j < COL; j++ )
-			if( mTableauState.GetTableau().GetPieces()[ i ][ j ] != "E" )
-				outfile << "(" << i << "," << j << "): " << mTableauState.GetTableau().GetPieces()[ i ][ j ] << std::endl;
+	for( int i = 0; i < aInitialTableau.GetRows(); i++ )
+		for( int j = 0; j < aInitialTableau.GetRows(); j++ )
+			if( mTableauState.GetTableau().GetPiece( i, j ) != "E" )
+				outfile << "(" << i << "," << j << "): " << mTableauState.GetTableau().GetPiece( i, j ) << std::endl;
 	outfile.close();
 }
 

@@ -44,34 +44,34 @@ public:
 		unsigned short mCount;
 	};
 
-	using destination = CTableau::destination;
-	using destinations = std::vector<destination>;
+	using coordinates = std::pair<CTableau::index, CTableau::index>;
+	using coordinates_vector = std::vector<coordinates>;
 
-	explicit CTableauState( const CTableau& aTableau, const destination& aCurrentPosition );
+	explicit CTableauState( const CTableau& aTableau, const coordinates& aCurrentPosition );
 
 	const CTableau& GetTableau() const;
-	const destination& GetCurrentPosition() const;
+	const coordinates& GetCurrentPosition() const;
 	const unsigned short& GetScore() const;
 
 	// Updates set and multi states with the piece hit. Returrns score for hitting such piece
 	unsigned short Update( const std::string& aPiece );
 
-	destination Randomize();
+	coordinates Randomize();
 
-	destination Move( std::mt19937_64& aRNG );
+	coordinates Move( std::mt19937_64& aRNG );
 
 private:
-	void MoveDiagonal( destinations& aDestinations ) const;
-	void MoveDiagonal( destinations& aDestinations, int aSteps ) const;
-	void MoveStraight( destinations& aDestinations ) const;
-	void MoveStraight( destinations& aDestinations, int aSteps ) const;
-	void MoveKnight( destinations& aDestinations ) const;
-	void MoveWildcard( destinations& aDestinations ) const;
+	void MoveDiagonal( coordinates_vector& aDestinations ) const;
+	void MoveDiagonal( coordinates_vector& aDestinations, int aSteps ) const;
+	void MoveStraight( coordinates_vector& aDestinations ) const;
+	void MoveStraight( coordinates_vector& aDestinations, int aSteps ) const;
+	void MoveKnight( coordinates_vector& aDestinations ) const;
+	void MoveWildcard( coordinates_vector& aDestinations ) const;
 
-	void AppendDestination( destinations& aDestinations, const destination& aDestination ) const;
+	void AppendDestination( coordinates_vector& aDestinations, const coordinates& aDestination ) const;
 
 	CTableau mTableau;
-	destination mCurrentPosition;
+	coordinates mCurrentPosition;
 	CSetState mSetState;
 	CMultiState mMultiState;
 
