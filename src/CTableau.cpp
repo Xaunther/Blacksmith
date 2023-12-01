@@ -43,8 +43,7 @@ CTableau::CTableau( const std::string& aFileName ) :
 
 const std::string& CTableau::GetPiece( const index& aRowIndex, const index& aColIndex ) const
 {
-	static const std::string EMPTY{ "E" };
-	return IsInside( aRowIndex, aColIndex ) ? mPieces[ aRowIndex * mRows + aColIndex ] : EMPTY;
+	return mPieces[ aRowIndex * mRows + aColIndex ];
 }
 
 const CTableau::index& CTableau::GetRows() const
@@ -54,8 +53,7 @@ const CTableau::index& CTableau::GetRows() const
 
 void CTableau::SetPiece( const index& aRowIndex, const index& aColIndex, const std::string& aPiece )
 {
-	if( IsInside( aRowIndex, aColIndex ) )
-		mPieces[ aRowIndex * mRows + aColIndex ] = aPiece;
+	mPieces[ aRowIndex * mRows + aColIndex ] = aPiece;
 }
 
 bool CTableau::IsInside( const index& aRowIndex, const index& aColIndex ) const
