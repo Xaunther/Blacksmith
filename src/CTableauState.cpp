@@ -123,7 +123,7 @@ CTableauState::coordinates CTableauState::Move( std::mt19937_64& aRNG )
 		return { -1,-1 };
 	else if( mTableau.GetPiece( mCurrentPosition.first, mCurrentPosition.second ) == "Q" )		  // Queen
 	{
-		destinations.reserve( MOVEPOS );
+		destinations.reserve( MOVEPOS * 2 );
 		MoveDiagonal( destinations );
 		MoveStraight( destinations );
 	}
