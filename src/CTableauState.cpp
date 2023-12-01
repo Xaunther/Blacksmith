@@ -103,13 +103,13 @@ const unsigned short& CTableauState::GetScore() const
 	return mScore;
 }
 
-CTableauState::coordinates CTableauState::Randomize()
+const CTableauState::coordinates& CTableauState::SetCurrentPositionAtRandom( std::mt19937_64& aRNG )
 {
 	coordinates_vector dests; // Save all possible aDestinations
 	dests.reserve( mTableau.Size() );
 	MoveWildcard( dests );
 	if( dests.size() > 0 ) // If it's possible
-		mCurrentPosition = dests[ rand() % dests.size() ];
+		mCurrentPosition = dests[ aRNG() % dests.size() ];
 
 	return *mCurrentPosition;
 }

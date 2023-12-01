@@ -56,7 +56,7 @@ public:
 	// Updates set and multi states with the piece hit. Returrns score for hitting such piece
 	unsigned short Update( const std::string& aPiece );
 
-	coordinates Randomize();
+	const coordinates& SetCurrentPositionAtRandom( std::mt19937_64& aRNG );
 
 	std::optional<coordinates> Move( std::mt19937_64& aRNG );
 
