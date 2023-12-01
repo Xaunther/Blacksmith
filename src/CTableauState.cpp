@@ -4,9 +4,23 @@
 
 #include "Constants.h"
 
-
 namespace blacksmith
 {
+
+constexpr unsigned short CTableauState::NUMERIC_DESTINATIONS_COUNT()
+{
+	return 8;
+}
+
+constexpr unsigned short CTableauState::KQ_DESTINATIONS_COUNT()
+{
+	return 8;
+}
+
+constexpr unsigned short CTableauState::RB_DESTINATIONS_COUNT()
+{
+	return 4;
+}
 
 CTableauState::CSetState::CSetState() :
 	mCount( 0 )
@@ -121,23 +135,23 @@ std::optional<CTableauState::coordinates> CTableauState::Move( std::mt19937_64& 
 		return {};
 	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "Q" )		  // Queen
 	{
-		destinations.reserve( MOVEPOS * 2 );
+		destinations.reserve( KQ_DESTINATIONS_COUNT() );
 		MoveDiagonal( destinations );
 		MoveStraight( destinations );
 	}
 	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "B" ) // Bishop
 	{
-		destinations.reserve( MOVEPOS );
+		destinations.reserve( RB_DESTINATIONS_COUNT() );
 		MoveDiagonal( destinations );
 	}
 	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "R" ) // Rook
 	{
-		destinations.reserve( MOVEPOS );
+		destinations.reserve( RB_DESTINATIONS_COUNT() );
 		MoveStraight( destinations );
 	}
 	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "K" ) // Knight
 	{
-		destinations.reserve( MOVEPOS_K );
+		destinations.reserve( KQ_DESTINATIONS_COUNT() );
 		MoveKnight( destinations );
 	}
 	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "W" ) // Rum (WILDCARD!)
@@ -147,7 +161,7 @@ std::optional<CTableauState::coordinates> CTableauState::Move( std::mt19937_64& 
 	}
 	else
 	{
-		destinations.reserve( MOVEPOS_K );
+		destinations.reserve( NUMERIC_DESTINATIONS_COUNT() );
 		MoveDiagonal( destinations, std::stoi( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) ) );
 		MoveStraight( destinations, std::stoi( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) ) );
 	}

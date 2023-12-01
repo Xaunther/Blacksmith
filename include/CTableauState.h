@@ -70,6 +70,10 @@ private:
 
 	void AppendDestination( coordinates_vector& aDestinations, const coordinates& aDestination ) const;
 
+	static constexpr unsigned short NUMERIC_DESTINATIONS_COUNT();
+	static constexpr unsigned short KQ_DESTINATIONS_COUNT();
+	static constexpr unsigned short RB_DESTINATIONS_COUNT();
+
 	CTableau mTableau;
 	std::optional<coordinates> mCurrentPosition;
 	CSetState mSetState;
