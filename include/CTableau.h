@@ -15,31 +15,31 @@ namespace blacksmith
 class CTableau
 {
 public:
-	using destination = std::pair<int, int>;
-	using destinations = std::vector<destination>;
-	using piece_matrix = std::array<std::array<std::string, COL>, ROW>;
+	using pieces = std::vector<std::string>;
+	using index = pieces::size_type;
 
-	CTableau( const std::string& aFileName );
+	explicit CTableau( const std::string& aFileName );
 
-	const piece_matrix& GetPieces() const;
-	piece_matrix& Pieces();
+	const std::string& GetPiece( const index& aRowIndex, const index& aColIndex ) const;
 
-	const std::string& GetPiece( const destination& aDestination ) const;
+	const index& GetRows() const;
 
-	const unsigned short& GetScore() const;
+	void SetPiece( const index& aRowIndex, const index& aColIndex, const std::string& aPiece );
 
-	void SetPiece( const destination& aDestination, const std::string& aPiece );
+	bool IsInside( const index& aRowIndex, const index& aColIndex ) const;
 
-	bool IsInside( const destination& aDestination ) const;
-
-	unsigned int CountPieces() const;
+	index CountPieces() const;
+	index Size() const;
 
 	static const std::set<std::string>& CHESS_PIECES();
 	static const std::set<std::string>& NUMBER_PIECES();
 	static const std::set<std::string>& PIECES();
 
+private:
 	// Variables
-	piece_matrix mPieces; // Codes for piece type: (E)mpty, (Q)ueen, (B)ishop, (R)ook, (K)night, 1, 2, 3, 4, (W)wildcard
+	pieces mPieces; // Codes for piece type: (E)mpty, (Q)ueen, (B)ishop, (R)ook, (K)night, 1, 2, 3, 4, (W)wildcard
+	index mRows;
+
 };
 
 };

@@ -4,9 +4,23 @@
 
 #include "Constants.h"
 
-
 namespace blacksmith
 {
+
+constexpr unsigned short CTableauState::NUMERIC_DESTINATIONS_COUNT()
+{
+	return 8;
+}
+
+constexpr unsigned short CTableauState::KQ_DESTINATIONS_COUNT()
+{
+	return 8;
+}
+
+constexpr unsigned short CTableauState::RB_DESTINATIONS_COUNT()
+{
+	return 4;
+}
 
 CTableauState::CSetState::CSetState() :
 	mCount( 0 )
@@ -82,7 +96,7 @@ void CTableauState::CMultiState::Reset()
 	*this = CMultiState();
 }
 
-CTableauState::CTableauState( const CTableau& aTableau, const destination& aCurrentPosition ) :
+CTableauState::CTableauState( const CTableau& aTableau, const std::optional<coordinates>& aCurrentPosition ) :
 	mTableau( aTableau ),
 	mCurrentPosition( aCurrentPosition )
 {
@@ -93,7 +107,7 @@ const CTableau& CTableauState::GetTableau() const
 	return mTableau;
 }
 
-const CTableauState::destination& CTableauState::GetCurrentPosition() const
+const std::optional<CTableauState::coordinates>& CTableauState::GetCurrentPosition() const
 {
 	return mCurrentPosition;
 }
@@ -103,125 +117,123 @@ const unsigned short& CTableauState::GetScore() const
 	return mScore;
 }
 
-CTableauState::destination CTableauState::Randomize()
+const CTableauState::coordinates& CTableauState::SetCurrentPositionAtRandom( std::mt19937_64& aRNG )
 {
-	destinations dests; // Save all possible aDestinations
-	dests.reserve( MAXPOS );
+	coordinates_vector dests; // Save all possible aDestinations
+	dests.reserve( mTableau.Size() );
 	MoveWildcard( dests );
 	if( dests.size() > 0 ) // If it's possible
-		mCurrentPosition = dests[ rand() % dests.size() ];
-	else
-		mCurrentPosition = { -1, -1 };
+		mCurrentPosition = dests[ aRNG() % dests.size() ];
 
-	return mCurrentPosition;
+	return *mCurrentPosition;
 }
 
-CTableauState::destination CTableauState::Move( std::mt19937_64& aRNG )
+std::optional<CTableauState::coordinates> CTableauState::Move( std::mt19937_64& aRNG )
 {
-	destinations destinations; // Save all possible aDestinations
-	if( mTableau.Pieces()[ mCurrentPosition.first ][ mCurrentPosition.second ] == "E" )		  // Empty
-		return { -1,-1 };
-	else if( mTableau.Pieces()[ mCurrentPosition.first ][ mCurrentPosition.second ] == "Q" )		  // Queen
+	coordinates_vector destinations; // Save all possible aDestinations
+	if( !mCurrentPosition || mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "E" )		  // Empty
+		return {};
+	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "Q" )		  // Queen
 	{
-		destinations.reserve( MOVEPOS );
+		destinations.reserve( KQ_DESTINATIONS_COUNT() );
 		MoveDiagonal( destinations );
 		MoveStraight( destinations );
 	}
-	else if( mTableau.Pieces()[ mCurrentPosition.first ][ mCurrentPosition.second ] == "B" ) // Bishop
+	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "B" ) // Bishop
 	{
-		destinations.reserve( MOVEPOS );
+		destinations.reserve( RB_DESTINATIONS_COUNT() );
 		MoveDiagonal( destinations );
 	}
-	else if( mTableau.Pieces()[ mCurrentPosition.first ][ mCurrentPosition.second ] == "R" ) // Rook
+	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "R" ) // Rook
 	{
-		destinations.reserve( MOVEPOS );
+		destinations.reserve( RB_DESTINATIONS_COUNT() );
 		MoveStraight( destinations );
 	}
-	else if( mTableau.Pieces()[ mCurrentPosition.first ][ mCurrentPosition.second ] == "K" ) // Knight
+	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "K" ) // Knight
 	{
-		destinations.reserve( MOVEPOS_K );
+		destinations.reserve( KQ_DESTINATIONS_COUNT() );
 		MoveKnight( destinations );
 	}
-	else if( mTableau.Pieces()[ mCurrentPosition.first ][ mCurrentPosition.second ] == "W" ) // Rum (WILDCARD!)
+	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "W" ) // Rum (WILDCARD!)
 	{
-		destinations.reserve( MAXPOS );
+		destinations.reserve( mTableau.Size() );
 		MoveWildcard( destinations );
 	}
 	else
 	{
-		destinations.reserve( MOVEPOS_K );
-		MoveDiagonal( destinations, std::stoi( mTableau.Pieces()[ mCurrentPosition.first ][ mCurrentPosition.second ] ) );
-		MoveStraight( destinations, std::stoi( mTableau.Pieces()[ mCurrentPosition.first ][ mCurrentPosition.second ] ) );
+		destinations.reserve( NUMERIC_DESTINATIONS_COUNT() );
+		MoveDiagonal( destinations, std::stoi( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) ) );
+		MoveStraight( destinations, std::stoi( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) ) );
 	}
-	mScore += Update( mTableau.Pieces()[ mCurrentPosition.first ][ mCurrentPosition.second ] );
-	mTableau.Pieces()[ mCurrentPosition.first ][ mCurrentPosition.second ] = "E";
-	if( destinations.size() > 0 ) // If it's possible
+	mScore += Update( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) );
+	mTableau.SetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second, "E" );
+	if( !destinations.empty() ) // If it's possible
 		mCurrentPosition = destinations[ aRNG() % destinations.size() ];
 	else
-		mCurrentPosition = { -1,-1 };
+		mCurrentPosition.reset();
 
 	return mCurrentPosition;
 }
 
-void CTableauState::MoveDiagonal( destinations& aDestinations ) const
+void CTableauState::MoveDiagonal( coordinates_vector& aDestinations ) const
 {
-	AppendDestination( aDestinations, { mCurrentPosition.first - std::min( mCurrentPosition.first - 0, mCurrentPosition.second - 0 ),
-		mCurrentPosition.second - std::min( mCurrentPosition.first - 0, mCurrentPosition.second - 0 ) } );
-	AppendDestination( aDestinations, { mCurrentPosition.first + std::min( 5 - mCurrentPosition.first, mCurrentPosition.second - 0 ),
-		mCurrentPosition.second - std::min( 5 - mCurrentPosition.first, mCurrentPosition.second - 0 ) } );
-	AppendDestination( aDestinations, { mCurrentPosition.first + std::min( 5 - mCurrentPosition.first, 5 - mCurrentPosition.second ),
-		mCurrentPosition.second + std::min( 5 - mCurrentPosition.first, 5 - mCurrentPosition.second ) } );
-	AppendDestination( aDestinations, { mCurrentPosition.first - std::min( mCurrentPosition.first - 0, 5 - mCurrentPosition.second ),
-		mCurrentPosition.second + std::min( mCurrentPosition.first - 0, 5 - mCurrentPosition.second ) } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first - std::min( ( *mCurrentPosition ).first - 0, ( *mCurrentPosition ).second - 0 ),
+		( *mCurrentPosition ).second - std::min( ( *mCurrentPosition ).first - 0, ( *mCurrentPosition ).second - 0 ) } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first + std::min( 5 - ( *mCurrentPosition ).first, ( *mCurrentPosition ).second - 0 ),
+		( *mCurrentPosition ).second - std::min( 5 - ( *mCurrentPosition ).first, ( *mCurrentPosition ).second - 0 ) } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first + std::min( 5 - ( *mCurrentPosition ).first, 5 - ( *mCurrentPosition ).second ),
+		( *mCurrentPosition ).second + std::min( 5 - ( *mCurrentPosition ).first, 5 - ( *mCurrentPosition ).second ) } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first - std::min( ( *mCurrentPosition ).first - 0, 5 - ( *mCurrentPosition ).second ),
+		( *mCurrentPosition ).second + std::min( ( *mCurrentPosition ).first - 0, 5 - ( *mCurrentPosition ).second ) } );
 }
 
-void CTableauState::MoveDiagonal( destinations& aDestinations, int aSteps ) const
+void CTableauState::MoveDiagonal( coordinates_vector& aDestinations, int aSteps ) const
 {
-	AppendDestination( aDestinations, { mCurrentPosition.first - aSteps, mCurrentPosition.second - aSteps } );
-	AppendDestination( aDestinations, { mCurrentPosition.first + aSteps, mCurrentPosition.second - aSteps } );
-	AppendDestination( aDestinations, { mCurrentPosition.first + aSteps, mCurrentPosition.second + aSteps } );
-	AppendDestination( aDestinations, { mCurrentPosition.first - aSteps, mCurrentPosition.second + aSteps } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first - aSteps, ( *mCurrentPosition ).second - aSteps } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first + aSteps, ( *mCurrentPosition ).second - aSteps } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first + aSteps, ( *mCurrentPosition ).second + aSteps } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first - aSteps, ( *mCurrentPosition ).second + aSteps } );
 }
 
-void CTableauState::MoveStraight( destinations& aDestinations ) const
+void CTableauState::MoveStraight( coordinates_vector& aDestinations ) const
 {
-	AppendDestination( aDestinations, { 0, mCurrentPosition.second } );
-	AppendDestination( aDestinations, { 5, mCurrentPosition.second } );
-	AppendDestination( aDestinations, { mCurrentPosition.first, 0 } );
-	AppendDestination( aDestinations, { mCurrentPosition.first, 5 } );
+	AppendDestination( aDestinations, { 0, ( *mCurrentPosition ).second } );
+	AppendDestination( aDestinations, { 5, ( *mCurrentPosition ).second } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first, 0 } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first, 5 } );
 }
 
-void CTableauState::MoveStraight( destinations& aDestinations, int aSteps ) const
+void CTableauState::MoveStraight( coordinates_vector& aDestinations, int aSteps ) const
 {
-	AppendDestination( aDestinations, { mCurrentPosition.first + aSteps, mCurrentPosition.second } );
-	AppendDestination( aDestinations, { mCurrentPosition.first - aSteps, mCurrentPosition.second } );
-	AppendDestination( aDestinations, { mCurrentPosition.first, mCurrentPosition.second + aSteps } );
-	AppendDestination( aDestinations, { mCurrentPosition.first, mCurrentPosition.second - aSteps } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first + aSteps, ( *mCurrentPosition ).second } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first - aSteps, ( *mCurrentPosition ).second } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first, ( *mCurrentPosition ).second + aSteps } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first, ( *mCurrentPosition ).second - aSteps } );
 }
 
-void CTableauState::MoveKnight( destinations& aDestinations ) const
+void CTableauState::MoveKnight( coordinates_vector& aDestinations ) const
 {
-	AppendDestination( aDestinations, { mCurrentPosition.first - 1, mCurrentPosition.second - 2 } );
-	AppendDestination( aDestinations, { mCurrentPosition.first - 1, mCurrentPosition.second + 2 } );
-	AppendDestination( aDestinations, { mCurrentPosition.first + 1, mCurrentPosition.second - 2 } );
-	AppendDestination( aDestinations, { mCurrentPosition.first + 1, mCurrentPosition.second + 2 } );
-	AppendDestination( aDestinations, { mCurrentPosition.first - 2, mCurrentPosition.second - 1 } );
-	AppendDestination( aDestinations, { mCurrentPosition.first - 2, mCurrentPosition.second + 1 } );
-	AppendDestination( aDestinations, { mCurrentPosition.first + 2, mCurrentPosition.second - 1 } );
-	AppendDestination( aDestinations, { mCurrentPosition.first + 2, mCurrentPosition.second + 1 } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first - 1, ( *mCurrentPosition ).second - 2 } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first - 1, ( *mCurrentPosition ).second + 2 } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first + 1, ( *mCurrentPosition ).second - 2 } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first + 1, ( *mCurrentPosition ).second + 2 } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first - 2, ( *mCurrentPosition ).second - 1 } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first - 2, ( *mCurrentPosition ).second + 1 } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first + 2, ( *mCurrentPosition ).second - 1 } );
+	AppendDestination( aDestinations, { ( *mCurrentPosition ).first + 2, ( *mCurrentPosition ).second + 1 } );
 }
 
-void CTableauState::MoveWildcard( destinations& aDestinations ) const
+void CTableauState::MoveWildcard( coordinates_vector& aDestinations ) const
 {
-	for( int i = 0; i < ROW; i++ )
-		for( int j = 0; j < COL; j++ )
+	for( int i = 0; i < mTableau.GetRows(); i++ )
+		for( int j = 0; j < mTableau.GetRows(); j++ )
 			AppendDestination( aDestinations, { i, j } );
 	return;
 }
 
-void CTableauState::AppendDestination( destinations& aDestinations, const destination& aDestination ) const
+void CTableauState::AppendDestination( coordinates_vector& aDestinations, const coordinates& aDestination ) const
 {
-	if( mCurrentPosition != aDestination && mTableau.IsInside( aDestination ) && mTableau.GetPieces()[ aDestination.first ][ aDestination.second ] != "E" )
+	if( *mCurrentPosition != aDestination && mTableau.IsInside( aDestination.first, aDestination.second ) && mTableau.GetPiece( aDestination.first, aDestination.second ) != "E" )
 		aDestinations.push_back( aDestination );
 }
 

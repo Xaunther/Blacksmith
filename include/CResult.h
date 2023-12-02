@@ -11,7 +11,8 @@ namespace blacksmith
 class CResult
 {
 public:
-	using history = std::list<CTableau::destination>;
+	using coordinates = CTableauState::coordinates;
+	using history = std::list<coordinates>;
 
 	explicit CResult( const CTableauState& aInitialTableauState );
 

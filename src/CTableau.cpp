@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <ranges>
 #include <string>
 #include <set>
 
@@ -11,8 +12,9 @@ namespace blacksmith
 namespace
 {
 
-CTableau::piece_matrix LoadPieces( const std::string_view aFileName );
-const CTableau::piece_matrix& CheckPieces( const CTableau::piece_matrix& aPieces );
+CTableau::pieces LoadPieces( const std::string_view aFileName );
+const CTableau::pieces& CheckPieces( const CTableau::pieces& aPieces );
+const CTableau::index& CheckRows( const CTableau::index& aRows, const CTableau::index& aPiecesCount );
 
 }
 
@@ -34,72 +36,71 @@ const std::set<std::string>& CTableau::PIECES()
 }
 
 CTableau::CTableau( const std::string& aFileName ) :
-	mPieces( CheckPieces( LoadPieces( aFileName ) ) )
+	mPieces( CheckPieces( LoadPieces( aFileName ) ) ),
+	mRows( CheckRows( static_cast< index >( std::sqrt( mPieces.size() ) ), mPieces.size() ) )
 {
 }
 
-const CTableau::piece_matrix& CTableau::GetPieces() const
+const std::string& CTableau::GetPiece( const index& aRowIndex, const index& aColIndex ) const
 {
-	return mPieces;
+	return mPieces[ aRowIndex * mRows + aColIndex ];
 }
 
-CTableau::piece_matrix& CTableau::Pieces()
+const CTableau::index& CTableau::GetRows() const
 {
-	return mPieces;
+	return mRows;
 }
 
-const std::string& CTableau::GetPiece( const destination& aDestination ) const
+void CTableau::SetPiece( const index& aRowIndex, const index& aColIndex, const std::string& aPiece )
 {
-	return mPieces.at( aDestination.first ).at( aDestination.second );
+	mPieces[ aRowIndex * mRows + aColIndex ] = aPiece;
 }
 
-void CTableau::SetPiece( const destination& aOrigin, const std::string& aPiece )
+bool CTableau::IsInside( const index& aRowIndex, const index& aColIndex ) const
 {
-	if( IsInside( aOrigin ) )
-		mPieces[ aOrigin.first ][ aOrigin.second ] = aPiece;
+	return aRowIndex < mRows && aColIndex < mRows;
 }
 
-bool CTableau::IsInside( const destination& aDestination ) const
+CTableau::index CTableau::CountPieces() const
 {
-	return aDestination.first >= 0 && aDestination.first < ROW && aDestination.second >= 0 && aDestination.second < COL;
+	return mPieces.size() - std::ranges::count( mPieces, "E" );
 }
 
-unsigned int CTableau::CountPieces() const
+CTableau::index CTableau::Size() const
 {
-	// Loop around and count non-empty slots
-	int count = 0;
-	for( const auto& _row : mPieces )
-		for( const auto& piece : _row )
-			if( piece != "E" )
-				count++;
-	return count;
+	return mPieces.size();
 }
 
 namespace
 {
 
-CTableau::piece_matrix LoadPieces( const std::string_view aFileName )
+CTableau::pieces LoadPieces( const std::string_view aFileName )
 {
-	CTableau::piece_matrix result;
+	CTableau::pieces result;
 
 	std::ifstream infile;
-	std::string basura;
 	infile.open( aFileName.data() );
-	for( auto& _row : result )
-		for( auto& piece : _row )
-			infile >> piece;
+	if( infile )
+		for( auto& object : std::ranges::istream_view<std::string>( infile ) )
+			result.emplace_back( std::move( object ) );
 	infile.close();
 
 	return result;
 }
 
-const CTableau::piece_matrix& CheckPieces( const CTableau::piece_matrix& aPieces )
+const CTableau::pieces& CheckPieces( const CTableau::pieces& aPieces )
 {
-	for( const auto& _row : aPieces )
-		for( const auto& piece : _row )
-			if( !CTableau::PIECES().contains( piece ) )
-				throw std::runtime_error( "No existe la pieza '" + piece + "'." );
+	for( const auto& piece : aPieces )
+		if( !CTableau::PIECES().contains( piece ) )
+			throw std::runtime_error( "The piece '" + piece + "' does not exist." );
 	return aPieces;
+}
+
+const CTableau::index& CheckRows( const CTableau::index& aRows, const CTableau::index& aPiecesCount )
+{
+	if( aRows * aRows != aPiecesCount )
+		throw std::runtime_error( "The tableau is not a square." );
+	return aRows;
 }
 
 }

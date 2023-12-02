@@ -9,7 +9,7 @@ using threads = std::vector<std::thread>;
 namespace
 {
 
-CTableau::destination InputOrigin();
+std::optional<CTableauState::coordinates> InputOrigin( const CTableau::index& aRows );
 bool InputSpeedOverScore();
 
 }
@@ -20,9 +20,9 @@ int main()
 	std::random_device rd;
 	std::mt19937_64 RNG{ rd() };
 
-	const auto& initialPosition = InputOrigin();
-	const auto& speedOverScore = InputSpeedOverScore();
 	const CTableau initialBoard( "board.dat" );
+	const auto& initialPosition = InputOrigin( initialBoard.GetRows() );
+	const auto& speedOverScore = InputSpeedOverScore();
 
 	CResult bestResult{ CTableauState{ initialBoard, initialPosition } };
 	threads resultThreads;
@@ -39,15 +39,15 @@ int main()
 namespace
 {
 
-CTableau::destination InputOrigin()
+std::optional<CTableauState::coordinates> InputOrigin( const CTableau::index& aRows )
 {
-	CTableau::destination result;
+	CTableauState::coordinates result;
 	// Ask for initial position
-	std::cout << "Initial row? (Number 0-" << ROW - 1 << ") (" << ROW << " for random): ";
+	std::cout << "Initial row? (Number 0-" << aRows - 1 << ") (" << aRows << " for random): ";
 	std::cin >> result.first;
-	std::cout << "Initial column? (Number 0-" << COL - 1 << ") (" << COL << " for random): ";
+	std::cout << "Initial column? (Number 0-" << aRows - 1 << ") (" << aRows << " for random): ";
 	std::cin >> result.second;
-	return result;
+	return ( result.first < aRows && result.second < aRows ) ? result : std::optional<CTableauState::coordinates>{};
 }
 
 bool InputSpeedOverScore()
