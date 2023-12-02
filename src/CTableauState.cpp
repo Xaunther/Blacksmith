@@ -2,8 +2,6 @@
 
 #include <set>
 
-#include "Constants.h"
-
 namespace blacksmith
 {
 
@@ -122,7 +120,7 @@ const CTableauState::coordinates& CTableauState::SetCurrentPositionAtRandom( std
 	coordinates_vector dests; // Save all possible aDestinations
 	dests.reserve( mTableau.Size() );
 	MoveWildcard( dests );
-	if( dests.size() > 0 ) // If it's possible
+	if( !dests.empty() ) // If it's possible
 		mCurrentPosition = dests[ aRNG() % dests.size() ];
 
 	return *mCurrentPosition;
