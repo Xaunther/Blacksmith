@@ -1,5 +1,7 @@
 #pragma once
 
+#include <deque>
+
 #include "CTableau.h"
 
 namespace blacksmith
@@ -20,7 +22,7 @@ public:
 
 	private:
 		// Current piece sequence
-		std::vector<std::string> mPieceSequence;
+		std::deque<std::string> mPieceSequence;
 		// True if current set is chess, false if it is a number set. Undefined if any.
 		std::optional<bool> mChessSet;
 		// Sets completed

@@ -23,7 +23,6 @@ constexpr unsigned short CTableauState::RB_DESTINATIONS_COUNT()
 CTableauState::CSetState::CSetState() :
 	mCount( 0 )
 {
-	mPieceSequence.reserve( CTableau::CHESS_PIECES().size() );
 }
 
 unsigned short CTableauState::CSetState::Update( const std::string& aPiece )
