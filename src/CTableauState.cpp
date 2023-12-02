@@ -28,34 +28,34 @@ CTableauState::CSetState::CSetState() :
 
 unsigned short CTableauState::CSetState::Update( const std::string& aPiece )
 {
-	// If it is a wildcard, just keep it going!
-	if( aPiece == "W" )
-		mPieceSequence.push_back( aPiece );
-	// If it continues the sequence
-	else if( !mChessSet || *mChessSet == CTableau::CHESS_PIECES().contains( aPiece ) )
+	if( aPiece != "W" )
 	{
-		const auto& found = std::find( mPieceSequence.begin(), mPieceSequence.end(), aPiece );
-		// If repeated, delete that portion and reset count before adding new
-		if( found != mPieceSequence.end() )
+		const auto pieceSet = CTableau::CHESS_PIECES().contains( aPiece );
+		if( !mChessSet )
+			mChessSet = pieceSet;
+		// If it continues the sequence
+		else if( *mChessSet == pieceSet )
 		{
-			mPieceSequence.erase( mPieceSequence.begin(), found + 1 );
+			auto found = std::find( mPieceSequence.cbegin(), mPieceSequence.cend(), aPiece );
+			// If repeated, delete that portion and reset count before adding new
+			if( found != mPieceSequence.cend() )
+			{
+				mPieceSequence.erase( mPieceSequence.cbegin(), ++found );
+				mCount = 0;
+			}
+		}
+		// Otherwise, reset
+		else
+		{
+			mPieceSequence.clear();
+			mChessSet = !*mChessSet;
 			mCount = 0;
 		}
-		mPieceSequence.push_back( aPiece );
-		mChessSet = CTableau::CHESS_PIECES().contains( aPiece );
-
 	}
-	// Otherwise, reset
-	else
-	{
-		mPieceSequence.clear();
-		mPieceSequence.push_back( aPiece );
-		mChessSet = !*mChessSet;
-		mCount = 0;
-	}
+	mPieceSequence.push_back( aPiece );
 
 	// Detect score given by this piece
-	if( mPieceSequence.size() == CTableau::CHESS_PIECES().size() )
+	if( mChessSet && mPieceSequence.size() >= CTableau::CHESS_PIECES().size() )
 	{
 		++mCount;
 		mPieceSequence.clear();
