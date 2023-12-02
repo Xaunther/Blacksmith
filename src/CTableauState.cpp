@@ -2,8 +2,6 @@
 
 #include <set>
 
-#include "Constants.h"
-
 namespace blacksmith
 {
 
