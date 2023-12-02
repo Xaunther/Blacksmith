@@ -223,8 +223,8 @@ void CTableauState::MoveKnight( coordinates_vector& aDestinations ) const
 
 void CTableauState::MoveWildcard( coordinates_vector& aDestinations ) const
 {
-	for( int i = 0; i < mTableau.GetRows(); i++ )
-		for( int j = 0; j < mTableau.GetRows(); j++ )
+	for( CTableau::index i = 0; i < mTableau.GetRows(); i++ )
+		for( CTableau::index j = 0; j < mTableau.GetRows(); j++ )
 			AppendDestination( aDestinations, { i, j } );
 	return;
 }

@@ -63,8 +63,8 @@ void CResult::SaveHistory( std::string_view aOutputFileName, const CTableau& aIn
 	outfile << "----------------------" << std::endl;
 	outfile << "   Remaining Pieces   " << std::endl;
 	outfile << "----------------------" << std::endl;
-	for( int i = 0; i < aInitialTableau.GetRows(); i++ )
-		for( int j = 0; j < aInitialTableau.GetRows(); j++ )
+	for( CTableau::index i = 0; i < aInitialTableau.GetRows(); i++ )
+		for( CTableau::index j = 0; j < aInitialTableau.GetRows(); j++ )
 			if( mTableauState.GetTableau().GetPiece( i, j ) != "E" )
 				outfile << "(" << i << "," << j << "): " << mTableauState.GetTableau().GetPiece( i, j ) << std::endl;
 	outfile.close();
