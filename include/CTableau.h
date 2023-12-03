@@ -15,6 +15,8 @@ class CTableau
 public:
 	using pieces = std::vector<std::string>;
 	using index = pieces::size_type;
+	using indices_set = std::set<index>;
+	using indices_sets = std::vector<indices_set>;
 
 	explicit CTableau( const std::string& aFileName );
 
@@ -37,7 +39,8 @@ private:
 	// Variables
 	pieces mPieces; // Codes for piece type: (E)mpty, (Q)ueen, (B)ishop, (R)ook, (K)night, 1, 2, 3, 4, (W)wildcard
 	index mRows;
-
+	indices_sets mTargetIndicesPerPiece;
+	indices_sets mOriginIndicesPerPiece;
 };
 
 };
