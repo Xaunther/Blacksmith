@@ -24,7 +24,7 @@ public:
 
 	const index& GetRows() const;
 
-	void SetPiece( const index& aRowIndex, const index& aColIndex, const std::string& aPiece );
+	void HitPiece( const index& aRowIndex, const index& aColIndex );
 
 	bool IsInside( const index& aRowIndex, const index& aColIndex ) const;
 

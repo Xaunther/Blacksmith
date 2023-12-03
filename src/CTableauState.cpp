@@ -163,7 +163,7 @@ std::optional<CTableauState::coordinates> CTableauState::Move( std::mt19937_64& 
 		MoveStraight( destinations, std::stoi( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) ) );
 	}
 	mScore += Update( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) );
-	mTableau.SetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second, "E" );
+	mTableau.HitPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second );
 	if( !destinations.empty() ) // If it's possible
 		mCurrentPosition = destinations[ aRNG() % destinations.size() ];
 	else

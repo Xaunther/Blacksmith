@@ -67,9 +67,14 @@ const CTableau::index& CTableau::GetRows() const
 	return mRows;
 }
 
-void CTableau::SetPiece( const index& aRowIndex, const index& aColIndex, const std::string& aPiece )
+void CTableau::HitPiece( const index& aRowIndex, const index& aColIndex )
 {
-	mPieces[ aRowIndex * mRows + aColIndex ] = aPiece;
+	const auto& hitIndex = aRowIndex * mRows + aColIndex;
+	mPieces[ hitIndex ] = "E";
+	for( const auto& originIndex : mOriginIndicesPerPiece[ hitIndex ] )
+		mTargetIndicesPerPiece[ originIndex ].erase( hitIndex );
+	mTargetIndicesPerPiece[ hitIndex ].clear();
+	mOriginIndicesPerPiece[ hitIndex ].clear();
 }
 
 bool CTableau::IsInside( const index& aRowIndex, const index& aColIndex ) const
