@@ -46,8 +46,7 @@ public:
 		unsigned short mCount;
 	};
 
-	using coordinates = std::pair<CTableau::index, CTableau::index>;
-	using coordinates_vector = std::vector<coordinates>;
+	using coordinates = CTableau::coordinates;
 
 	explicit CTableauState( const CTableau& aTableau, const std::optional<coordinates>& aCurrentPosition );
 
@@ -63,19 +62,6 @@ public:
 	std::optional<coordinates> Move( std::mt19937_64& aRNG );
 
 private:
-	void MoveDiagonal( coordinates_vector& aDestinations ) const;
-	void MoveDiagonal( coordinates_vector& aDestinations, int aSteps ) const;
-	void MoveStraight( coordinates_vector& aDestinations ) const;
-	void MoveStraight( coordinates_vector& aDestinations, int aSteps ) const;
-	void MoveKnight( coordinates_vector& aDestinations ) const;
-	void MoveWildcard( coordinates_vector& aDestinations ) const;
-
-	void AppendDestination( coordinates_vector& aDestinations, const coordinates& aDestination ) const;
-
-	static constexpr unsigned short NUMERIC_DESTINATIONS_COUNT();
-	static constexpr unsigned short KQ_DESTINATIONS_COUNT();
-	static constexpr unsigned short RB_DESTINATIONS_COUNT();
-
 	CTableau mTableau;
 	std::optional<coordinates> mCurrentPosition;
 	CSetState mSetState;

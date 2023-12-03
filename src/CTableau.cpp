@@ -29,6 +29,7 @@ CTableau::indices_set CreateNumericTargets( const CTableau::index& aOriginIndex,
 CTableau::indices_set CreateStraightTargets( const CTableau::index& aOriginIndex, const CTableau::pieces& aPieces, const CTableau::index& aRows, const std::optional<CTableau::index>& aDistance = {} );
 CTableau::indices_set CreateDiagonalTargets( const CTableau::index& aOriginIndex, const CTableau::pieces& aPieces, const CTableau::index& aRows, const std::optional<CTableau::index>& aDistance = {} );
 
+std::optional<CTableau::coordinates> DrawCoordinates( const CTableau::indices_set& aTargetIndices, const CTableau::index& aRows, std::mt19937_64& aRNG );
 
 }
 
@@ -62,19 +63,43 @@ const std::string& CTableau::GetPiece( const index& aRowIndex, const index& aCol
 	return mPieces[ aRowIndex * mRows + aColIndex ];
 }
 
+std::optional<CTableau::coordinates> CTableau::GetRandomPieceCoordinates( std::mt19937_64& aRNG ) const
+{
+	const auto& piecesCount = CountPieces();
+	if( piecesCount == 0 ) return {};
+	const auto& drawResult = aRNG() % piecesCount;
+	index pieceCount = 0;
+	for( auto pieceIt = mPieces.cbegin(); pieceIt != mPieces.cend(); ++pieceIt )
+	{
+		if( *pieceIt != "E" && ++pieceCount > drawResult )
+		{
+			const index& drawnIndex = std::distance( mPieces.cbegin(), pieceIt );
+			return std::make_optional<coordinates>( drawnIndex / mRows, drawnIndex % mRows );
+		}
+	}
+	return {};
+}
+
 const CTableau::index& CTableau::GetRows() const
 {
 	return mRows;
 }
 
-void CTableau::HitPiece( const index& aRowIndex, const index& aColIndex )
+std::optional<CTableau::coordinates> CTableau::HitPiece( const index& aRowIndex, const index& aColIndex, std::mt19937_64& aRNG )
 {
 	const auto& hitIndex = aRowIndex * mRows + aColIndex;
 	mPieces[ hitIndex ] = "E";
+
+	auto& targetIndices = mTargetIndicesPerPiece[ hitIndex ];
+	auto& originIndices = mOriginIndicesPerPiece[ hitIndex ];
+	const auto& drawnCoordinates = DrawCoordinates( targetIndices, mRows, aRNG );
+
 	for( const auto& originIndex : mOriginIndicesPerPiece[ hitIndex ] )
 		mTargetIndicesPerPiece[ originIndex ].erase( hitIndex );
-	mTargetIndicesPerPiece[ hitIndex ].clear();
-	mOriginIndicesPerPiece[ hitIndex ].clear();
+	targetIndices.clear();
+	originIndices.clear();
+
+	return drawnCoordinates;
 }
 
 bool CTableau::IsInside( const index& aRowIndex, const index& aColIndex ) const
@@ -318,7 +343,7 @@ CTableau::indices_set CreateDiagonalTargets( const CTableau::index& aOriginIndex
 	CTableau::indices_set result;
 
 	{
-		const auto& maxDistance = std::min( aOriginIndex % aRows, aOriginIndex / aRows );
+		const auto maxDistance = std::min( aOriginIndex % aRows, aOriginIndex / aRows );
 		if( !aDistance || maxDistance >= *aDistance )
 		{
 			const auto& targetIndex = aOriginIndex - ( aRows + 1 ) * aDistance.value_or( maxDistance );
@@ -327,7 +352,7 @@ CTableau::indices_set CreateDiagonalTargets( const CTableau::index& aOriginIndex
 		}
 	}
 	{
-		const auto& maxDistance = std::min( ( aRows - 1 ) - ( aOriginIndex % aRows ), aOriginIndex / aRows );
+		const auto maxDistance = std::min( ( aRows - 1 ) - ( aOriginIndex % aRows ), aOriginIndex / aRows );
 		if( !aDistance || maxDistance >= *aDistance )
 		{
 			const auto& targetIndex = aOriginIndex - ( aRows - 1 ) * aDistance.value_or( maxDistance );
@@ -336,7 +361,7 @@ CTableau::indices_set CreateDiagonalTargets( const CTableau::index& aOriginIndex
 		}
 	}
 	{
-		const auto& maxDistance = std::min( aOriginIndex % aRows, ( aRows - 1 ) - ( aOriginIndex / aRows ) );
+		const auto maxDistance = std::min( aOriginIndex % aRows, ( aRows - 1 ) - ( aOriginIndex / aRows ) );
 		if( !aDistance || maxDistance >= *aDistance )
 		{
 			const auto& targetIndex = aOriginIndex + ( aRows - 1 ) * aDistance.value_or( maxDistance );
@@ -345,7 +370,7 @@ CTableau::indices_set CreateDiagonalTargets( const CTableau::index& aOriginIndex
 		}
 	}
 	{
-		const auto& maxDistance = std::min( ( aRows - 1 ) - ( aOriginIndex % aRows ), ( aRows - 1 ) - ( aOriginIndex / aRows ) );
+		const auto maxDistance = std::min( ( aRows - 1 ) - ( aOriginIndex % aRows ), ( aRows - 1 ) - ( aOriginIndex / aRows ) );
 		if( !aDistance || maxDistance >= *aDistance )
 		{
 			const auto& targetIndex = aOriginIndex + ( aRows + 1 ) * aDistance.value_or( maxDistance );
@@ -355,6 +380,13 @@ CTableau::indices_set CreateDiagonalTargets( const CTableau::index& aOriginIndex
 	}
 
 	return result;
+}
+
+std::optional<CTableau::coordinates> DrawCoordinates( const CTableau::indices_set& aTargetIndices, const CTableau::index& aRows, std::mt19937_64& aRNG )
+{
+	if( aTargetIndices.empty() ) return {};
+	const auto drawnIndex = *std::next( aTargetIndices.cbegin(), aRNG() % aTargetIndices.size() );
+	return std::make_optional<CTableau::coordinates>( drawnIndex / aRows, drawnIndex % aRows );
 }
 
 }

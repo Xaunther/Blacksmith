@@ -17,14 +17,16 @@ public:
 	using index = pieces::size_type;
 	using indices_set = std::set<index>;
 	using indices_sets = std::vector<indices_set>;
+	using coordinates = std::pair<index, index>;
 
 	explicit CTableau( const std::string& aFileName );
 
 	const std::string& GetPiece( const index& aRowIndex, const index& aColIndex ) const;
+	std::optional<coordinates> GetRandomPieceCoordinates( std::mt19937_64& aRNG ) const;
 
 	const index& GetRows() const;
 
-	void HitPiece( const index& aRowIndex, const index& aColIndex );
+	std::optional<coordinates> HitPiece( const index& aRowIndex, const index& aColIndex, std::mt19937_64& aRNG );
 
 	bool IsInside( const index& aRowIndex, const index& aColIndex ) const;
 
