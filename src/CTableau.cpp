@@ -51,9 +51,9 @@ const CTableau::index& CTableau::GetRows() const
 	return mRows;
 }
 
-void CTableau::SetPiece( const index& aRowIndex, const index& aColIndex, const std::string& aPiece )
+void CTableau::HitPiece( const index& aRowIndex, const index& aColIndex )
 {
-	mPieces[ aRowIndex * mRows + aColIndex ] = aPiece;
+	mPieces[ aRowIndex * mRows + aColIndex ] = "E";
 }
 
 bool CTableau::IsInside( const index& aRowIndex, const index& aColIndex ) const
