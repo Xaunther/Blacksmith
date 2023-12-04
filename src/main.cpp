@@ -16,7 +16,7 @@ int main( const int aArgsCount, const char** aArgs )
 
 	CResult bestResult{ CTableauState{ inputArgs.mInitialCoordinates } };
 	std::async( &CResult::FindBest, &bestResult, inputArgs.mMaxSteps, initialBoard, std::ref( RNG ), inputArgs.mSpeed ).wait();
-	bestResult.SaveHistory( inputArgs.mBestPatternFileName, initialBoard );
+	bestResult.GetTableauState().SaveHistory( inputArgs.mBestPatternFileName, initialBoard );
 
 	return 0;
 }

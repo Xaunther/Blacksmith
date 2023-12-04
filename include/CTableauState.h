@@ -66,6 +66,8 @@ public:
 
 	std::optional<coordinates> Move( const CTableau& aTableau, std::mt19937_64& aRNG );
 
+	void SaveHistory( std::string_view aOutputFileName, const CTableau& aTableau ) const;
+
 private:
 	void MoveDiagonal( const CTableau& aTableau, coordinates_vector& aDestinations ) const;
 	void MoveDiagonal( const CTableau& aTableau, coordinates_vector& aDestinations, int aSteps ) const;

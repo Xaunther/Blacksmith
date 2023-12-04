@@ -1,5 +1,7 @@
 #include "CTableauState.h"
 
+#include <fstream>
+#include <iomanip>
 #include <set>
 
 namespace blacksmith
@@ -170,6 +172,27 @@ std::optional<CTableauState::coordinates> CTableauState::Move( const CTableau& a
 		mCurrentPosition.reset();
 
 	return mCurrentPosition;
+}
+
+void CTableauState::SaveHistory( std::string_view aOutputFileName, const CTableau& aInitialTableau ) const
+{
+	std::ofstream outfile;
+	outfile.open( aOutputFileName.data() );
+	outfile << "Step #   (i,j)   Piece" << std::endl;
+	outfile << "----------------------" << std::endl;
+
+	unsigned int index = 0;
+	for( const auto& epoch : mHistory )
+		outfile << std::setw( 4 ) << index++ << "     (" << epoch.first << "," << epoch.second << ")     " << std::setw( 1 ) << CTableau::PieceToString( aInitialTableau.GetPiece( epoch.first, epoch.second ) ) << std::endl;
+	// Write also remaining pieces
+	outfile << "----------------------" << std::endl;
+	outfile << "   Remaining Pieces   " << std::endl;
+	outfile << "----------------------" << std::endl;
+	for( CTableau::index i = 0; i < aInitialTableau.GetRows(); i++ )
+		for( CTableau::index j = 0; j < aInitialTableau.GetRows(); j++ )
+			if( aInitialTableau.GetPiece( i, j ) != CTableau::E_PIECE_TYPE::EMPTY && std::find( mHistory.cbegin(), mHistory.cend(), std::make_pair( i, j ) ) == mHistory.cend() )
+				outfile << "(" << i << "," << j << "): " << CTableau::PieceToString( aInitialTableau.GetPiece( i, j ) ) << std::endl;
+	outfile.close();
 }
 
 void CTableauState::MoveDiagonal( const CTableau& aTableau, coordinates_vector& aDestinations ) const
