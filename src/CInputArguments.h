@@ -9,4 +9,5 @@ struct CInputArguments
 	unsigned long mMaxSteps;
 	unsigned long mSeed;
 	std::string mBoardFileName;
+	std::string mBestPatternFileName;
 };

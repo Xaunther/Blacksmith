@@ -25,7 +25,7 @@ int main( const unsigned int& aArgsCount, const char** aArgs )
 
 	CResult bestResult{ CTableauState{ initialBoard, initialPosition } };
 	std::async( &CResult::FindBest, &bestResult, inputArgs.mMaxSteps, std::ref( RNG ), speedOverScore ).wait();
-	bestResult.SaveHistory( "Best-pattern.txt", initialBoard );
+	bestResult.SaveHistory( inputArgs.mBestPatternFileName, initialBoard );
 
 	return 0;
 }
