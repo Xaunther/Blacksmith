@@ -9,7 +9,7 @@ struct CInputArguments
 {
 	using coordinates = blacksmith::CTableauState::coordinates;
 
-	CInputArguments( const unsigned int& aArgsCount, const char** aArgs );
+	CInputArguments( const int& aArgsCount, const char** aArgs );
 
 	unsigned long mMaxSteps;
 	unsigned long mSeed;
@@ -17,4 +17,5 @@ struct CInputArguments
 	std::string mBestPatternFileName;
 	std::optional<blacksmith::CTableauState::coordinates> mInitialCoordinates;
 	bool mSpeed;
+	bool mRun = true;
 };

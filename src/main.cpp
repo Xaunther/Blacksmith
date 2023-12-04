@@ -6,11 +6,12 @@
 
 using namespace blacksmith;
 
-int main( const unsigned int& aArgsCount, const char** aArgs )
+int main( const int aArgsCount, const char** aArgs )
 {
 	const CInputArguments inputArgs{ aArgsCount, aArgs };
-	std::mt19937_64 RNG{ inputArgs.mSeed };
+	if( !inputArgs.mRun ) return 0;
 
+	std::mt19937_64 RNG{ inputArgs.mSeed };
 	const CTableau initialBoard( inputArgs.mBoardFileName );
 
 	CResult bestResult{ CTableauState{ initialBoard, inputArgs.mInitialCoordinates } };
