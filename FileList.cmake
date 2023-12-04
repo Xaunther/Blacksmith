@@ -1,16 +1,18 @@
 # Core source files
 SET(BLACKSMITH_CORE_SOURCE
+	src/CInputArguments.cpp
 	src/CResult.cpp
 	src/CTableau.cpp
 	src/CTableauState.cpp
 )
 
 # Core internal headers
-SET(BLACKSMITH_CORE_INTERNAL_HEADERS)
+SET(BLACKSMITH_CORE_INTERNAL_HEADERS
+	src/CInputArguments.h
+)
 
 # Core external headers
 SET(BLACKSMITH_CORE_EXTERNAL_HEADERS
-	include/Constants.h
 	include/CResult.h
 	include/CTableau.h
 	include/CTableauState.h

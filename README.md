@@ -21,7 +21,7 @@ This approach is not perfect since after every stroke of the hammer a new piece 
 
 The following instructions are valid either if you downloaded the executable directly or you built it yourself.
 
-In the same folder as your executable, create a `board.dat` file. This file will contain the information of the blacksmith game board. In the file, you should create a 6x6 grid like this:
+First, create a text file which will contain the information of the blacksmith game board. In the file, you should create a 6x6 grid like this:
 
 ```txt
 3 4 R Q 3 2
@@ -45,15 +45,9 @@ Corresponding to each of the pieces in the board
 - `W`: **Rum** (wildcard) piece.
 - `E`: **Empty** (unstrokable) piece.
 
-Once saved, run the executable and after (hopefully) a short time it will return the best combination it found to try and hit every piece of the board given. If it takes longer, it probably means that it is having a hard time to clear it whole. When running the executable, you will be prompted to input the starting row (0 corresponds to the top row while 5 is the bottom) and column (0 is the left-most column while 5 is the right-most). You can also let the program randomly choose a starting piece. This is useful when starting a game, given that you can start hitting any piece on the board. Finally, you can choose whether you want the program to maximize score (default) or maximize execution speed. This simply means that when maximizing speed, execution will stop as soon as a combination is found that can clear the whole board, while when maximizing score the program will always try the preset number of times in order to obtain the combination with the highest number of strokes and combos. The command line interface looks something like this:
+Once saved, run the executable and after (hopefully) a short time it will return the best combination it found to try and hit every piece of the board given. If it takes longer, it probably means that it is having a hard time to clear it whole. There are a number of options you can set like the number of simulations, the random seed or the input and output files. To get a full list, run `blacksmith -h`.
 
-```txt
-Initial row? (Number 0-5) (6 for random): 6
-Initial column? (Number 0-5) (6 for random): 6
-Prefer speed over score? [y/N]:
-```
-
-Once it's finished, a `Best-pattern.txt` will have been created containing the stroke order needed to clear from the board as many pieces as possible, as well as any remaining pieces:
+Once it's finished, a `Best-pattern.txt` file (or the file you specified with the `-o` option) will have been created containing the stroke order needed to clear from the board as many pieces as possible, as well as any remaining pieces:
 
 ```txt
 Step #   (i,j)   Piece
