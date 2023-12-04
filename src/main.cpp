@@ -14,9 +14,9 @@ int main( const int aArgsCount, const char** aArgs )
 	std::mt19937_64 RNG{ inputArgs.mSeed };
 	const CTableau initialBoard( inputArgs.mBoardFileName );
 
-	CResult bestResult{ CTableauState{ initialBoard, inputArgs.mInitialCoordinates } };
-	std::async( &CResult::FindBest, &bestResult, inputArgs.mMaxSteps, std::ref( RNG ), inputArgs.mSpeed ).wait();
-	bestResult.SaveHistory( inputArgs.mBestPatternFileName, initialBoard );
+	CResult bestResult{ CTableauState{ inputArgs.mInitialCoordinates } };
+	std::async( &CResult::FindBest, &bestResult, inputArgs.mMaxSteps, initialBoard, std::ref( RNG ), inputArgs.mSpeed ).wait();
+	bestResult.GetTableauState().SaveHistory( inputArgs.mBestPatternFileName, initialBoard );
 
 	return 0;
 }
