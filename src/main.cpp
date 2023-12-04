@@ -2,11 +2,9 @@
 #include "Constants.h"
 
 #include <iostream>
-#include <thread>
+#include <future>
 
 using namespace blacksmith;
-
-using threads = std::vector<std::thread>;
 
 namespace
 {
@@ -27,14 +25,9 @@ int main()
 	const auto& speedOverScore = InputSpeedOverScore();
 
 	CResult bestResult{ CTableauState{ initialBoard, initialPosition } };
-	threads resultThreads;
-	resultThreads.reserve( N_THREADS );
-	for( unsigned short threadIndex = 0; threadIndex < N_THREADS; ++threadIndex )
-		resultThreads.emplace_back( &CResult::FindBest, &bestResult, MAXSTEPS, std::ref( RNG ), speedOverScore );
-
-	for( auto& resultThread : resultThreads )
-		resultThread.join();
+	std::async( &CResult::FindBest, &bestResult, MAXSTEPS, std::ref( RNG ), speedOverScore ).wait();
 	bestResult.SaveHistory( "Best-pattern.txt", initialBoard );
+
 	return 0;
 }
 
