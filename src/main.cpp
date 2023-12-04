@@ -19,7 +19,7 @@ int main( const unsigned int& aArgsCount, const char** aArgs )
 	const CInputArguments inputArgs{ aArgsCount, aArgs };
 	std::mt19937_64 RNG{ inputArgs.mSeed };
 
-	const CTableau initialBoard( "board.dat" );
+	const CTableau initialBoard( inputArgs.mBoardFileName );
 	const auto& initialPosition = InputOrigin( initialBoard.GetRows() );
 	const auto& speedOverScore = InputSpeedOverScore();
 
