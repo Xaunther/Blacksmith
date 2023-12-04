@@ -11,16 +11,18 @@ public:
 	class CSetState
 	{
 	public:
+		using piece_type = CTableau::piece_type;
+
 		CSetState();
 
 		// Updates current state with the piece hit. Returns score for hitting such piece
-		unsigned short Update( const std::string& aPiece );
+		unsigned short Update( const piece_type& aPiece );
 
 		void Reset();
 
 	private:
 		// Current piece sequence
-		std::vector<std::string> mPieceSequence;
+		std::vector<piece_type> mPieceSequence;
 		// True if current set is chess, false if it is a number set. Undefined if any.
 		std::optional<bool> mChessSet;
 		// Sets completed
@@ -30,22 +32,25 @@ public:
 	class CMultiState
 	{
 	public:
+		using piece_type = CTableau::piece_type;
+
 		CMultiState();
 
 		// Updates current state with the piece hit. Returns score for hitting such piece
-		unsigned short Update( const std::string& aPiece );
+		unsigned short Update( const piece_type& aPiece );
 
 		void Reset();
 
 	private:
 		// Current piece being repeated
-		std::string mPiece;
+		piece_type mPiece;
 		// Number of repetitions
 		unsigned short mCount;
 	};
 
 	using coordinates = std::pair<CTableau::index, CTableau::index>;
 	using coordinates_vector = std::vector<coordinates>;
+	using piece_type = CTableau::piece_type;
 
 	explicit CTableauState( const CTableau& aTableau, const std::optional<coordinates>& aCurrentPosition );
 
@@ -54,7 +59,7 @@ public:
 	const unsigned short& GetScore() const;
 
 	// Updates set and multi states with the piece hit. Returrns score for hitting such piece
-	unsigned short Update( const std::string& aPiece );
+	unsigned short Update( const piece_type& aPiece );
 
 	const coordinates& SetCurrentPositionAtRandom( std::mt19937_64& aRNG );
 

@@ -58,15 +58,15 @@ void CResult::SaveHistory( std::string_view aOutputFileName, const CTableau& aIn
 
 	unsigned int index = 0;
 	for( const auto& epoch : mHistory )
-		outfile << std::setw( 4 ) << index++ << "     (" << epoch.first << "," << epoch.second << ")     " << std::setw( 1 ) << aInitialTableau.GetPiece( epoch.first, epoch.second ) << std::endl;
+		outfile << std::setw( 4 ) << index++ << "     (" << epoch.first << "," << epoch.second << ")     " << std::setw( 1 ) << CTableau::PieceToString( aInitialTableau.GetPiece( epoch.first, epoch.second ) ) << std::endl;
 	// Write also remaining pieces
 	outfile << "----------------------" << std::endl;
 	outfile << "   Remaining Pieces   " << std::endl;
 	outfile << "----------------------" << std::endl;
 	for( CTableau::index i = 0; i < aInitialTableau.GetRows(); i++ )
 		for( CTableau::index j = 0; j < aInitialTableau.GetRows(); j++ )
-			if( mTableauState.GetTableau().GetPiece( i, j ) != "E" )
-				outfile << "(" << i << "," << j << "): " << mTableauState.GetTableau().GetPiece( i, j ) << std::endl;
+			if( mTableauState.GetTableau().GetPiece( i, j ) != CTableau::E_PIECE_TYPE::EMPTY )
+				outfile << "(" << i << "," << j << "): " << CTableau::PieceToString( mTableauState.GetTableau().GetPiece( i, j ) ) << std::endl;
 	outfile.close();
 }
 

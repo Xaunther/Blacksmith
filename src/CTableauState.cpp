@@ -26,10 +26,10 @@ CTableauState::CSetState::CSetState() :
 	mPieceSequence.reserve( CTableau::CHESS_PIECES().size() );
 }
 
-unsigned short CTableauState::CSetState::Update( const std::string& aPiece )
+unsigned short CTableauState::CSetState::Update( const piece_type& aPiece )
 {
 	// If it is a wildcard, just keep it going!
-	if( aPiece == "W" )
+	if( aPiece == CTableau::E_PIECE_TYPE::WILDCARD )
 		mPieceSequence.push_back( aPiece );
 	// If it continues the sequence
 	else if( !mChessSet || *mChessSet == CTableau::CHESS_PIECES().contains( aPiece ) )
@@ -72,12 +72,12 @@ void CTableauState::CSetState::Reset()
 }
 
 CTableauState::CMultiState::CMultiState() :
-	mPiece( "E" ),
+	mPiece( CTableau::E_PIECE_TYPE::EMPTY ),
 	mCount( 0 )
 {
 }
 
-unsigned short CTableauState::CMultiState::Update( const std::string& aPiece )
+unsigned short CTableauState::CMultiState::Update( const piece_type& aPiece )
 {
 	if( mPiece == aPiece )
 		++mCount;
@@ -129,30 +129,30 @@ const CTableauState::coordinates& CTableauState::SetCurrentPositionAtRandom( std
 std::optional<CTableauState::coordinates> CTableauState::Move( std::mt19937_64& aRNG )
 {
 	coordinates_vector destinations; // Save all possible aDestinations
-	if( !mCurrentPosition || mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "E" )		  // Empty
+	if( !mCurrentPosition || mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == CTableau::E_PIECE_TYPE::EMPTY )		  // Empty
 		return {};
-	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "Q" )		  // Queen
+	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == CTableau::E_PIECE_TYPE::QUEEN )		  // Queen
 	{
 		destinations.reserve( KQ_DESTINATIONS_COUNT() );
 		MoveDiagonal( destinations );
 		MoveStraight( destinations );
 	}
-	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "B" ) // Bishop
+	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == CTableau::E_PIECE_TYPE::BISHOP ) // Bishop
 	{
 		destinations.reserve( RB_DESTINATIONS_COUNT() );
 		MoveDiagonal( destinations );
 	}
-	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "R" ) // Rook
+	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == CTableau::E_PIECE_TYPE::ROOK ) // Rook
 	{
 		destinations.reserve( RB_DESTINATIONS_COUNT() );
 		MoveStraight( destinations );
 	}
-	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "K" ) // Knight
+	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == CTableau::E_PIECE_TYPE::KNIGHT ) // Knight
 	{
 		destinations.reserve( KQ_DESTINATIONS_COUNT() );
 		MoveKnight( destinations );
 	}
-	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == "W" ) // Rum (WILDCARD!)
+	else if( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) == CTableau::E_PIECE_TYPE::WILDCARD ) // Rum (WILDCARD!)
 	{
 		destinations.reserve( mTableau.Size() );
 		MoveWildcard( destinations );
@@ -160,8 +160,8 @@ std::optional<CTableauState::coordinates> CTableauState::Move( std::mt19937_64& 
 	else
 	{
 		destinations.reserve( NUMERIC_DESTINATIONS_COUNT() );
-		MoveDiagonal( destinations, std::stoi( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) ) );
-		MoveStraight( destinations, std::stoi( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) ) );
+		MoveDiagonal( destinations, static_cast< int >( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) ) );
+		MoveStraight( destinations, static_cast< int >( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) ) );
 	}
 	mScore += Update( mTableau.GetPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second ) );
 	mTableau.HitPiece( ( *mCurrentPosition ).first, ( *mCurrentPosition ).second );
@@ -231,11 +231,11 @@ void CTableauState::MoveWildcard( coordinates_vector& aDestinations ) const
 
 void CTableauState::AppendDestination( coordinates_vector& aDestinations, const coordinates& aDestination ) const
 {
-	if( *mCurrentPosition != aDestination && mTableau.IsInside( aDestination.first, aDestination.second ) && mTableau.GetPiece( aDestination.first, aDestination.second ) != "E" )
+	if( *mCurrentPosition != aDestination && mTableau.IsInside( aDestination.first, aDestination.second ) && mTableau.GetPiece( aDestination.first, aDestination.second ) != CTableau::E_PIECE_TYPE::EMPTY )
 		aDestinations.push_back( aDestination );
 }
 
-unsigned short CTableauState::Update( const std::string& aPiece )
+unsigned short CTableauState::Update( const piece_type& aPiece )
 {
 	const auto& setScore = mSetState.Update( aPiece );
 	if( setScore > 1 )
