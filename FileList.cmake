@@ -13,7 +13,6 @@ SET(BLACKSMITH_CORE_INTERNAL_HEADERS
 
 # Core external headers
 SET(BLACKSMITH_CORE_EXTERNAL_HEADERS
-	include/Constants.h
 	include/CResult.h
 	include/CTableau.h
 	include/CTableauState.h

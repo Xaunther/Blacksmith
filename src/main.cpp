@@ -1,6 +1,5 @@
 #include "CInputArguments.h"
 #include "CResult.h"
-#include "Constants.h"
 
 #include <iostream>
 #include <future>
