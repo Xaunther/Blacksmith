@@ -9,7 +9,6 @@ using namespace blacksmith;
 namespace
 {
 
-std::optional<CTableauState::coordinates> InputOrigin( const CTableau::index& aRows );
 bool InputSpeedOverScore();
 
 }
@@ -20,10 +19,9 @@ int main( const unsigned int& aArgsCount, const char** aArgs )
 	std::mt19937_64 RNG{ inputArgs.mSeed };
 
 	const CTableau initialBoard( inputArgs.mBoardFileName );
-	const auto& initialPosition = InputOrigin( initialBoard.GetRows() );
 	const auto& speedOverScore = InputSpeedOverScore();
 
-	CResult bestResult{ CTableauState{ initialBoard, initialPosition } };
+	CResult bestResult{ CTableauState{ initialBoard, inputArgs.mInitialCoordinates } };
 	std::async( &CResult::FindBest, &bestResult, inputArgs.mMaxSteps, std::ref( RNG ), speedOverScore ).wait();
 	bestResult.SaveHistory( inputArgs.mBestPatternFileName, initialBoard );
 
@@ -32,17 +30,6 @@ int main( const unsigned int& aArgsCount, const char** aArgs )
 
 namespace
 {
-
-std::optional<CTableauState::coordinates> InputOrigin( const CTableau::index& aRows )
-{
-	CTableauState::coordinates result;
-	// Ask for initial position
-	std::cout << "Initial row? (Number 0-" << aRows - 1 << ") (" << aRows << " for random): ";
-	std::cin >> result.first;
-	std::cout << "Initial column? (Number 0-" << aRows - 1 << ") (" << aRows << " for random): ";
-	std::cin >> result.second;
-	return ( result.first < aRows && result.second < aRows ) ? result : std::optional<CTableauState::coordinates>{};
-}
 
 bool InputSpeedOverScore()
 {
