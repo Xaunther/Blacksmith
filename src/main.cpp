@@ -17,10 +17,7 @@ bool InputSpeedOverScore();
 int main( const unsigned int& aArgsCount, const char** aArgs )
 {
 	const CInputArguments inputArgs{ aArgsCount, aArgs };
-
-	// Initialize random seed
-	std::random_device rd;
-	std::mt19937_64 RNG{ rd() };
+	std::mt19937_64 RNG{ inputArgs.mSeed };
 
 	const CTableau initialBoard( "board.dat" );
 	const auto& initialPosition = InputOrigin( initialBoard.GetRows() );

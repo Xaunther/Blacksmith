@@ -1,5 +1,6 @@
 #include "CInputArguments.h"
 
+#include <random>
 #include <sstream>
 
 namespace
@@ -10,7 +11,8 @@ template <typename T> T GetArgument( const unsigned int& aArgsCount, const char*
 }
 
 CInputArguments::CInputArguments( const unsigned int& aArgsCount, const char** aArgs ) :
-	mMaxSteps( GetArgument<unsigned long>( aArgsCount, aArgs, "-n", 10000000 ) )
+	mMaxSteps( GetArgument<unsigned long>( aArgsCount, aArgs, "-n", 10000000 ) ),
+	mSeed( GetArgument<unsigned long>( aArgsCount, aArgs, "-s", std::random_device()( ) ) )
 {
 }
 
