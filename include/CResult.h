@@ -16,7 +16,6 @@ public:
 
 	explicit CResult( const CTableauState& aInitialTableauState );
 
-	const history& GetHistory() const;
 	const CTableauState& GetTableauState() const;
 	const std::atomic_ulong& GetCounter() const;
 
@@ -24,10 +23,7 @@ public:
 
 	bool IsBetterResult( const history::size_type& aCountHits, const unsigned short& aScore ) const;
 
-	void SaveHistory( std::string_view aOutputFileName, const CTableau& aInitialTableau ) const;
-
 private:
-	history mHistory;
 	CTableauState mTableauState;
 	std::mutex mMutex;
 	std::atomic_ulong mCounter;
