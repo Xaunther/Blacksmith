@@ -16,4 +16,5 @@ struct CInputArguments
 	std::string mBoardFileName;
 	std::string mBestPatternFileName;
 	std::optional<blacksmith::CTableauState::coordinates> mInitialCoordinates;
+	bool mSpeed;
 };

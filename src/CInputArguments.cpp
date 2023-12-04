@@ -24,7 +24,8 @@ CInputArguments::CInputArguments( const unsigned int& aArgsCount, const char** a
 	mSeed( GetArgument<unsigned long>( aArgsCount, aArgs, "-s", std::random_device()( ) ) ),
 	mBoardFileName( GetArgument<std::string>( aArgsCount, aArgs, "-i", "board.dat" ) ),
 	mBestPatternFileName( GetArgument<std::string>( aArgsCount, aArgs, "-o", "Best-pattern.txt" ) ),
-	mInitialCoordinates( CreateInitialCoordinates( aArgsCount, aArgs ) )
+	mInitialCoordinates( CreateInitialCoordinates( aArgsCount, aArgs ) ),
+	mSpeed( GetArgument<bool>( aArgsCount, aArgs, "--speed", false ) )
 {
 }
 
