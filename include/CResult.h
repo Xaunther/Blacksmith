@@ -20,7 +20,7 @@ public:
 	const CTableauState& GetTableauState() const;
 	const std::atomic_ulong& GetCounter() const;
 
-	void FindBest( const unsigned int& aNTries, std::mt19937_64& aRNG, const bool aSpeed );
+	void FindBest( const unsigned int& aNTries, const CTableau& aTableau, std::mt19937_64& aRNG, const bool aSpeed );
 
 	bool IsBetterResult( const history::size_type& aCountHits, const unsigned short& aScore ) const;
 

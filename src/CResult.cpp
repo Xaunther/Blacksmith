@@ -25,15 +25,15 @@ const std::atomic_ulong& CResult::GetCounter() const
 	return mCounter;
 }
 
-void CResult::FindBest( const unsigned int& aNTries, std::mt19937_64& aRNG, const bool aSpeed )
+void CResult::FindBest( const unsigned int& aNTries, const CTableau& aTableau, std::mt19937_64& aRNG, const bool aSpeed )
 {
 	const auto initialTableauState = mTableauState;
-	const auto& targetPieces = initialTableauState.GetTableau().CountPieces() + ( aSpeed ? 0 : 1 );
+	const auto& targetPieces = aTableau.CountPieces() + ( aSpeed ? 0 : 1 );
 	for( ; mCounter < aNTries && mHistory.size() < targetPieces; mCounter++ ) // Iterate many times
 	{
 		auto tableauState = initialTableauState;
-		history posHistory{ initialTableauState.GetCurrentPosition().value_or( tableauState.SetCurrentPositionAtRandom( aRNG ) ) };
-		while( const auto& nextPosition = tableauState.Move( aRNG ) )
+		history posHistory{ initialTableauState.GetCurrentPosition().value_or( tableauState.SetCurrentPositionAtRandom( aTableau, aRNG ) ) };
+		while( const auto& nextPosition = tableauState.Move( aTableau, aRNG ) )
 			posHistory.emplace_back( *nextPosition );
 		std::lock_guard lock( mMutex );
 		if( IsBetterResult( posHistory.size(), tableauState.GetScore() ) ) // New record!
@@ -65,8 +65,8 @@ void CResult::SaveHistory( std::string_view aOutputFileName, const CTableau& aIn
 	outfile << "----------------------" << std::endl;
 	for( CTableau::index i = 0; i < aInitialTableau.GetRows(); i++ )
 		for( CTableau::index j = 0; j < aInitialTableau.GetRows(); j++ )
-			if( mTableauState.GetTableau().GetPiece( i, j ) != CTableau::E_PIECE_TYPE::EMPTY )
-				outfile << "(" << i << "," << j << "): " << CTableau::PieceToString( mTableauState.GetTableau().GetPiece( i, j ) ) << std::endl;
+			if( aInitialTableau.GetPiece( i, j ) != CTableau::E_PIECE_TYPE::EMPTY && std::find( mTableauState.GetHistory().cbegin(), mTableauState.GetHistory().cend(), std::make_pair( i, j ) ) == mTableauState.GetHistory().cend() )
+				outfile << "(" << i << "," << j << "): " << CTableau::PieceToString( aInitialTableau.GetPiece( i, j ) ) << std::endl;
 	outfile.close();
 }
 
