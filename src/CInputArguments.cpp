@@ -45,8 +45,7 @@ std::optional<CInputArguments::coordinates> CreateInitialCoordinates( const int&
 {
 	const auto& row = GetArgument<std::optional<CInputArguments::coordinates::first_type>>( aArgsCount, aArgs, "--row" );
 	const auto& col = GetArgument<std::optional<CInputArguments::coordinates::second_type>>( aArgsCount, aArgs, "--col" );
-	if( row && col ) return std::make_pair( *row, *col );
-	else return {};
+	return row && col ? std::make_optional( std::make_pair( *row, *col ) ) : std::optional<CInputArguments::coordinates>{};
 }
 template <typename T> std::enable_if_t<is_optional<T>::value, T> GetArgument( const int& aArgsCount, const char** aArgs, const std::string_view aFlag )
 {
@@ -62,7 +61,7 @@ template <typename T> std::enable_if_t<!is_optional<T>::value, T> GetArgument( c
 	{
 		std::stringstream ss;
 		T result;
-		ss << aArgs;
+		ss << *found;
 		ss >> result;
 		return result;
 	}
