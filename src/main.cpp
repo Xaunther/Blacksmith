@@ -1,3 +1,4 @@
+#include "CInputArguments.h"
 #include "CResult.h"
 #include "Constants.h"
 
@@ -14,8 +15,10 @@ bool InputSpeedOverScore();
 
 }
 
-int main()
+int main( const unsigned int& aArgsCount, const char** aArgs )
 {
+	const CInputArguments inputArgs{ aArgsCount, aArgs };
+
 	// Initialize random seed
 	std::random_device rd;
 	std::mt19937_64 RNG{ rd() };
@@ -25,7 +28,7 @@ int main()
 	const auto& speedOverScore = InputSpeedOverScore();
 
 	CResult bestResult{ CTableauState{ initialBoard, initialPosition } };
-	std::async( &CResult::FindBest, &bestResult, MAXSTEPS, std::ref( RNG ), speedOverScore ).wait();
+	std::async( &CResult::FindBest, &bestResult, inputArgs.mMaxSteps, std::ref( RNG ), speedOverScore ).wait();
 	bestResult.SaveHistory( "Best-pattern.txt", initialBoard );
 
 	return 0;
