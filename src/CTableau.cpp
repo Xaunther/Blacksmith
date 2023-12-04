@@ -53,11 +53,6 @@ const CTableau::index& CTableau::GetRows() const
 	return mRows;
 }
 
-void CTableau::HitPiece( const index& aRowIndex, const index& aColIndex )
-{
-	mPieces[ aRowIndex * mRows + aColIndex ] = E_PIECE_TYPE::EMPTY;
-}
-
 bool CTableau::IsInside( const index& aRowIndex, const index& aColIndex ) const
 {
 	return aRowIndex < mRows && aColIndex < mRows;

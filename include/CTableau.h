@@ -37,8 +37,6 @@ public:
 
 	const index& GetRows() const;
 
-	void HitPiece( const index& aRowIndex, const index& aColIndex );
-
 	bool IsInside( const index& aRowIndex, const index& aColIndex ) const;
 
 	index CountPieces() const;
