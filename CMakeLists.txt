@@ -13,10 +13,10 @@ set(BLACKSMITH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(BLACKSMITH_LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 # Compiler-specific flags
-if(CMAKE_COMPILER_IS_GNUCXX)
-	set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Werror")
-else()
-	set(CMAKE_CXX_FLAGS "-W4 -WX -EHsc")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+	set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Werror -Os")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	set(CMAKE_CXX_FLAGS "-W4 -WX -EHsc -Os")
 endif()
 
 set(CMAKE_CXX_FLAGS_RELEASE "-Os")
