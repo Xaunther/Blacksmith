@@ -27,7 +27,9 @@ void CResult::FindBest( const unsigned int& aNTries, const CTableau& aTableau, s
 	for( ; mCounter < aNTries && mTableauState.GetHistory().size() < targetPieces; mCounter++ ) // Iterate many times
 	{
 		auto tableauState = initialTableauState;
-		history posHistory{ initialTableauState.GetCurrentPosition().value_or( tableauState.SetCurrentPositionAtRandom( aTableau, aRNG ) ) };
+		if( !initialTableauState.GetCurrentPosition() )
+			tableauState.SetCurrentPositionAtRandom( aTableau, aRNG );
+		history posHistory{ *initialTableauState.GetCurrentPosition() };
 		while( const auto& nextPosition = tableauState.Move( aTableau, aRNG ) )
 			posHistory.emplace_back( *nextPosition );
 		std::lock_guard lock( mMutex );
