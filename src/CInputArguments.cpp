@@ -1,5 +1,6 @@
 #include "CInputArguments.h"
 
+#include <algorithm>
 #include <iostream>
 #include <random>
 #include <sstream>
