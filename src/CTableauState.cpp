@@ -37,7 +37,7 @@ unsigned short CTableauState::CSetState::Update( const piece_type& aPiece )
 		// If it continues the sequence
 		else if( *mChessSet == pieceSet )
 		{
-			auto found = std::find( mPieceSequence.cbegin(), mPieceSequence.cend(), aPiece );
+			auto found = std::ranges::find( mPieceSequence, aPiece );
 			// If repeated, delete that portion and reset count before adding new
 			if( found != mPieceSequence.cend() )
 			{
@@ -189,7 +189,7 @@ void CTableauState::SaveHistory( std::string_view aOutputFileName, const CTablea
 	outfile << "----------------------" << std::endl;
 	for( CTableau::index i = 0; i < aInitialTableau.GetRows(); i++ )
 		for( CTableau::index j = 0; j < aInitialTableau.GetRows(); j++ )
-			if( aInitialTableau.GetPiece( i, j ) != CTableau::E_PIECE_TYPE::EMPTY && std::find( mHistory.cbegin(), mHistory.cend(), std::make_pair( i, j ) ) == mHistory.cend() )
+			if( aInitialTableau.GetPiece( i, j ) != CTableau::E_PIECE_TYPE::EMPTY && std::ranges::find( mHistory, std::make_pair( i, j ) ) == mHistory.cend() )
 				outfile << "(" << i << "," << j << "): " << CTableau::PieceToString( aInitialTableau.GetPiece( i, j ) ) << std::endl;
 	outfile.close();
 }
@@ -253,7 +253,7 @@ void CTableauState::MoveWildcard( const CTableau& aTableau, coordinates_vector& 
 void CTableauState::AppendDestination( const CTableau& aTableau, coordinates_vector& aDestinations, const coordinates& aDestination ) const
 {
 	if( *mCurrentPosition != aDestination && aTableau.IsInside( aDestination.first, aDestination.second ) && aTableau.GetPiece( aDestination.first, aDestination.second ) != CTableau::E_PIECE_TYPE::EMPTY &&
-		std::find( mHistory.cbegin(), mHistory.cend(), aDestination ) == mHistory.cend() )
+		std::ranges::find( mHistory, aDestination ) == mHistory.cend() )
 		aDestinations.push_back( aDestination );
 }
 
